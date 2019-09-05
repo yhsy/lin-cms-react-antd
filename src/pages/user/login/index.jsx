@@ -7,9 +7,9 @@ import LoginComponents from './components/Login';
 import styles from './style.less';
 const { Tab, UserName, Password, Mobile, Captcha, Submit } = LoginComponents;
 const InputPassword = Input.Password;
-@connect(({ login, loading }) => ({
-  userLogin: login,
-  submitting: loading.effects['login/login'],
+@connect(({ admin, loading }) => ({
+  userLogin: admin,
+  submitting: loading.effects['admin/loginPwd'],
 }))
 class Login extends Component {
   loginForm = undefined;
@@ -28,7 +28,7 @@ class Login extends Component {
     if (!err) {
       const { dispatch } = this.props;
       dispatch({
-        type: 'login/login',
+        type: 'admin/loginPwd',
         payload: { ...values, type },
       });
     }
@@ -73,7 +73,7 @@ class Login extends Component {
     />
   );
 
-  render() {
+  render () {
     const { userLogin, submitting } = this.props;
     const { status, type: loginType } = userLogin;
     const { type, autoLogin } = this.state;
