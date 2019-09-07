@@ -1,5 +1,14 @@
+import { routerRedux } from 'dva/router';
+import { stringify } from 'querystring';
+import { setAuthority } from '@/utils/authority';
+import { getPageQuery } from '@/utils/utils';
+
 import { loginPwd } from '@/services/admin';
-const UserModel = {
+import { message } from 'antd';
+
+import Md5 from 'md5'
+
+const AdminModel = {
   namespace: 'admin',
   state: {
     currentUser: {},
@@ -8,9 +17,13 @@ const UserModel = {
     *loginPwd ({ payload }, { call, put }) {
       const data = {
         username: payload.userName,
-        password: payload.password
+        password: Md5(payload.password)
       }
       const response = yield call(loginPwd, data);
+      if (response.code !== 0) {
+        message.error(response.msg)
+        return
+      }
       yield put({
         type: 'changeLoginStatus',
         payload: response,
@@ -49,4 +62,4 @@ const UserModel = {
     },
   },
 };
-export default UserModel;
+export default AdminModel;

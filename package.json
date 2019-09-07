@@ -27,11 +27,18 @@
   },
   "lint-staged": {
     "**/*.less": "stylelint --syntax less",
-    "**/*.{js,jsx,tsx,ts,less,md,json}": ["prettier --write", "git add"],
+    "**/*.{js,jsx,tsx,ts,less,md,json}": [
+      "prettier --write",
+      "git add"
+    ],
     "**/*.{js,jsx}": "npm run lint-staged:js",
     "**/*.{js,ts,tsx}": "npm run lint-staged:js"
   },
-  "browserslist": ["> 1%", "last 2 versions", "not ie <= 10"],
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 10"
+  ],
   "dependencies": {
     "@ant-design/pro-layout": "^4.5.9",
     "@antv/data-set": "^0.10.2",
@@ -81,6 +88,7 @@
     "import-sort-style-module": "^6.0.0",
     "jest-puppeteer": "^4.2.0",
     "lint-staged": "^9.0.0",
+    "md5": "^2.2.1",
     "mockjs": "^1.0.1-beta3",
     "node-fetch": "^2.6.0",
     "prettier": "^1.17.1",
@@ -92,8 +100,12 @@
     "umi-types": "^0.3.8",
     "webpack-theme-color-replacer": "^1.2.15"
   },
-  "optionalDependencies": { "puppeteer": "^1.17.0" },
-  "engines": { "node": ">=10.0.0" },
+  "optionalDependencies": {
+    "puppeteer": "^1.17.0"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  },
   "checkFiles": [
     "src/**/*.js*",
     "src/**/*.ts*",

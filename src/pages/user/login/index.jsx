@@ -4,7 +4,16 @@ import React, { Component } from 'react';
 import Link from 'umi/link';
 import { connect } from 'dva';
 import LoginComponents from './components/Login';
+
 import styles from './style.less';
+
+// 关闭校验警告
+// const Schema = require('async-validator');
+
+import Schema from 'async-validator';
+Schema.warning = () => { };
+
+
 const { Tab, UserName, Password, Mobile, Captcha, Submit } = LoginComponents;
 const InputPassword = Input.Password;
 @connect(({ admin, loading }) => ({
@@ -119,7 +128,6 @@ class Login extends Component {
             ]}
           />
           <Password
-            visibilityToggle
             name="password"
             placeholder="请输入密码"
             rules={[
