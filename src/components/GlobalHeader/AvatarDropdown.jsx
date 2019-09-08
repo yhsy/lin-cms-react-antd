@@ -5,6 +5,7 @@ import { connect } from 'dva';
 import router from 'umi/router';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
+import AdminModel from '@/models/admin';
 
 class AvatarDropdown extends React.Component {
   onMenuClick = event => {
@@ -25,11 +26,12 @@ class AvatarDropdown extends React.Component {
     router.push(`/account/${key}`);
   };
 
-  render() {
+  render () {
     const {
-      currentUser = {
+      userInfo = {
         avatar: '',
-        name: '',
+        id: '',
+        nickname: '',
       },
       menu,
     } = this.props;
@@ -55,25 +57,26 @@ class AvatarDropdown extends React.Component {
         </Menu.Item>
       </Menu>
     );
-    return currentUser && currentUser.name ? (
+    return userInfo && userInfo.nickname ? (
       <HeaderDropdown overlay={menuHeaderDropdown}>
         <span className={`${styles.action} ${styles.account}`}>
-          <Avatar size="small" className={styles.avatar} src={currentUser.avatar} alt="avatar" />
-          <span className={styles.name}>{currentUser.name}</span>
+          <Avatar size="small" className={styles.avatar} src={userInfo.avatar} alt="avatar" />
+          <span className={userInfo.nickname}>{userInfo.nickname}</span>
         </span>
       </HeaderDropdown>
     ) : (
-      <Spin
-        size="small"
-        style={{
-          marginLeft: 8,
-          marginRight: 8,
-        }}
-      />
-    );
+        <Spin
+          size="small"
+          style={{
+            marginLeft: 8,
+            marginRight: 8,
+          }}
+        />
+      );
   }
 }
 
-export default connect(({ user }) => ({
-  currentUser: user.currentUser,
+export default connect(({ admin }) => ({
+  // currentUser: user.currentUser,
+  userInfo: admin.userInfo
 }))(AvatarDropdown);

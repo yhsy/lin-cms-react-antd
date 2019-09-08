@@ -8,7 +8,7 @@ class SecurityLayout extends React.Component {
     isReady: false,
   };
 
-  componentDidMount() {
+  componentDidMount () {
     this.setState({
       isReady: true,
     });
@@ -16,20 +16,22 @@ class SecurityLayout extends React.Component {
 
     if (dispatch) {
       dispatch({
-        type: 'user/fetchCurrent',
+        // type: 'user/fetchCurrent',
+        type: 'admin/getInfo',
       });
     }
   }
 
-  render() {
+  render () {
     const { isReady } = this.state;
-    const { children, loading, currentUser } = this.props;
+    const { children, loading, userInfo } = this.props;
+    console.log(userInfo)
 
-    if ((!currentUser.userid && loading) || !isReady) {
+    if ((!userInfo.id && loading) || !isReady) {
       return <PageLoading />;
     }
 
-    if (!currentUser.userid) {
+    if (!userInfo.id) {
       return <Redirect to="/user/login"></Redirect>;
     }
 
@@ -37,7 +39,8 @@ class SecurityLayout extends React.Component {
   }
 }
 
-export default connect(({ user, loading }) => ({
-  currentUser: user.currentUser,
-  loading: loading.models.user,
+export default connect(({ admin, loading }) => ({
+  // currentUser: user.currentUser,
+  userInfo: admin.userInfo,
+  loading: loading.models.admin,
 }))(SecurityLayout);
