@@ -7,6 +7,8 @@ import { loginPwd } from '@/services/admin';
 import { message } from 'antd';
 
 import Md5 from 'md5'
+// Token和Uid存储
+import { setToken, setUid } from '../utils/auth'
 
 const AdminModel = {
   namespace: 'admin',
@@ -20,26 +22,35 @@ const AdminModel = {
         password: Md5(payload.password)
       }
       const response = yield call(loginPwd, data);
+      // 判断是否登录成功
       if (response.code !== 0) {
         message.error(response.msg)
         return
       }
+
+      // 存储token和用户id(cookie里)
+      const { token, id } = response.data;
+
+      setToken(token)
+      setUid(id)
+
       yield put({
         type: 'changeLoginStatus',
         payload: response,
       }); // Login successfully
 
-      if (response.status === 'ok') {
+      // 跳转到首页
+      if (response.code === 0) {
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
         let { redirect } = params;
 
+        // 是否有跳转的链接
         if (redirect) {
           const redirectUrlParams = new URL(redirect);
 
           if (redirectUrlParams.origin === urlParams.origin) {
             redirect = redirect.substr(urlParams.origin.length);
-
             if (redirect.match(/^\/.*#/)) {
               redirect = redirect.substr(redirect.indexOf('#') + 1);
             }
@@ -49,7 +60,14 @@ const AdminModel = {
           }
         }
 
-        yield put(routerRedux.replace(redirect || '/'));
+        if (!redirect) {
+          yield put(routerRedux.push('/'))
+        } else {
+          yield put(routerRedux.replace(redirect));
+        }
+        // 下面这两种方法都有bug,不能跳转到 /
+        // yield put(routerRedux.replace(redirect || '/'));
+        // yield put(routerRedux.push(redirect || '/'))
       }
     },
 
