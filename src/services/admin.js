@@ -10,3 +10,12 @@ export async function loginPwd (data) {
 export async function getInfo () {
   return request('/admin/info');
 }
+
+// 修改密码
+export async function changePassword (data) {
+  return request('/admin/change_password', {
+    method: 'POST',
+    data,
+  });
+}
+
