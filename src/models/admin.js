@@ -120,6 +120,26 @@ const AdminModel = {
         }
       }
     },
+    // 退出登录
+    *loginOut (_, { put }) {
+      // 清除token和uid
+      removeUid()
+      removeToken()
+
+      // 获取重定向页面
+      const { redirect } = getPageQuery(); // redirect
+
+      if (window.location.pathname !== '/user/login' && !redirect) {
+        yield put(
+          routerRedux.replace({
+            pathname: '/user/login',
+            search: stringify({
+              redirect: window.location.href,
+            }),
+          }),
+        );
+      }
+    },
   },
   reducers: {
     changeLoginStatus (state, { payload }) {
