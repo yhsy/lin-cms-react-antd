@@ -88,7 +88,7 @@ class bannerManager extends Component {
     } = this.props;
 
     const {
-      page, limit, query
+      page, limit, query, showType
     } = this.state
 
     return (
@@ -212,8 +212,8 @@ class bannerManager extends Component {
       page: Number(page) || 1,
       title,
       is_show,
-      start_time,
-      end_time,
+      start_time: start_time || '',
+      end_time: end_time || '',
     }
 
     const { dispatch } = this.props;
