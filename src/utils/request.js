@@ -58,7 +58,7 @@ request.interceptors.request.use((url, options) => {
 
     // 统一请求头
     optionData.headers.Authorization = 'Bearer ' + getToken()
-    optionData.headers.id = getUid();;
+    optionData.headers.id = getUid();
     return optionData;
   }
   return options;

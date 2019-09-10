@@ -49,5 +49,7 @@ export default {
   'menu.editor.koni': '拓扑编辑器',
 
   'menu.changePassword': '修改密码',
+  'menu.Banner': 'Banner管理',
+
 
 };

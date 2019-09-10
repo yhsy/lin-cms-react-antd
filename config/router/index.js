@@ -30,6 +30,12 @@ const router = [
             component: './Welcome',
           },
           {
+            path: '/banner',
+            name: 'Banner',
+            icon: 'picture',
+            component: './banner',
+          },
+          {
             component: './404',
           },
         ],
