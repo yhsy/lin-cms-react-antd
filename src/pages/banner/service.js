@@ -5,3 +5,10 @@ export async function getBannerList (params) {
     params,
   });
 }
+// 添加Banner
+export async function addBanner (data) {
+  return request('/home/banner/add', {
+    method: 'POST',
+    data,
+  });
+}

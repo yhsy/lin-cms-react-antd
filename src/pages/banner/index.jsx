@@ -72,7 +72,14 @@ class bannerManager extends Component {
       sTime: '',
       eTime: ''
     },
-    showType: ['隐藏', '显示']
+    showType: ['隐藏', '显示'],
+    addModal: false,
+    addForm: {
+      sort: '',
+      title: '',
+      img_url: '',
+      link: '',
+    }
   }
 
   // 页面载入之前(挂载)
@@ -90,8 +97,11 @@ class bannerManager extends Component {
     } = this.props;
 
     const {
-      page, limit, query, showType
+      page, limit, query, showType,
+      addForm, addModal,
     } = this.state
+
+    const { getFieldDecorator } = this.props.form;
 
     return (
       <PageHeaderWrapper>
@@ -101,58 +111,69 @@ class bannerManager extends Component {
               <div className="g-hd">
                 {/* 搜索区 */}
                 <div className="search" style={{ margin: '30px 10px' }}>
-                  <Form layout="inline">
-                    <FormItem label="标题">
-                      <Input
-                        value={query.title}
-                        onChange={(e) => {
-                          const { query } = this.state;
-                          const { value } = e.target;
-                          query.title = value;
-                          this.setState({
-                            query
-                          })
-                        }}
-                        placeholder="请输入标题" />
-                    </FormItem>
+                  <Row gutter={16} type="flex" justify="space-between">
+                    <Col>
+                      <Form layout="inline">
+                        <FormItem label="标题">
+                          <Input
+                            value={query.title}
+                            onChange={(e) => {
+                              const { query } = this.state;
+                              const { value } = e.target;
+                              query.title = value;
+                              this.setState({
+                                query
+                              })
+                            }}
+                            placeholder="请输入标题" />
+                        </FormItem>
 
-                    <FormItem label="是否显示" style={{ marginBottom: '20px' }}>
-                      <Select
-                        value={query.is_show}
-                        style={{ width: 80 }}
-                        onChange={(value) => {
-                          const { query } = this.state;
-                          query.is_show = value
-                          this.setState({
-                            query
-                          })
-                        }}>
-                        <Option value={1}>显示</Option>
-                        <Option value={0}>隐藏</Option>
-                      </Select>
-                    </FormItem>
+                        <FormItem label="是否显示" style={{ marginBottom: '20px' }}>
+                          <Select
+                            value={query.is_show}
+                            style={{ width: 80 }}
+                            onChange={(value) => {
+                              const { query } = this.state;
+                              query.is_show = value
+                              this.setState({
+                                query
+                              })
+                            }}>
+                            <Option value={1}>显示</Option>
+                            <Option value={0}>隐藏</Option>
+                          </Select>
+                        </FormItem>
 
-                    {/* 
-                      <FormItem label="创建时间">
-                        <RangePicker
-                          format="YYYY-MM-DD"
-                          value={[query.start_time, query.end_time]}
-                          ranges={{
-                            '今天': [moment(), moment()],
-                            '最近一个月': [moment().startOf('month'), moment().endOf('month')],
-                          }}
-                          onChange={this.changeDate.bind(this)}
-                        />
-                      </FormItem> 
-                    */}
+                        {/* 
+                          <FormItem label="创建时间">
+                            <RangePicker
+                              format="YYYY-MM-DD"
+                              value={[query.start_time, query.end_time]}
+                              ranges={{
+                                '今天': [moment(), moment()],
+                                '最近一个月': [moment().startOf('month'), moment().endOf('month')],
+                              }}
+                              onChange={this.changeDate.bind(this)}
+                            />
+                          </FormItem> 
+                        */}
 
-                    <FormItem>
-                      <Button type="primary" onClick={this.handleQuery.bind(this)} size="large">搜索</Button>
-                    </FormItem>
-                    <FormItem>
-                      <Button onClick={this.handleQueryReset.bind(this)} size="large">重置</Button>
-                    </FormItem>
-                  </Form>
+                        <FormItem>
+                          <Button type="primary" onClick={this.handleQuery.bind(this)} size="large">搜索</Button>
+                        </FormItem>
+                        <FormItem>
+                          <Button onClick={this.handleQueryReset.bind(this)} size="large">重置</Button>
+                        </FormItem>
+                      </Form>
+                    </Col>
+                    <Col>
+                      <Button type="primary" onClick={() => {
+                        this.setState({
+                          addModal: true
+                        })
+                      }} >添加Banner</Button>
+                    </Col>
+                  </Row>
                 </div>
 
               </div>
@@ -199,6 +220,114 @@ class bannerManager extends Component {
             </Card>
           </div>
 
+          <Modal
+            title="添加Banner"
+            visible={addModal}
+            onCancel={() => {
+              this.setState({
+                addModal: false
+              })
+            }}
+            onOk={() => {
+              this.addBanner()
+            }}
+          >
+            <Form>
+              <FormItem label="标题">
+                {getFieldDecorator('title', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '标题不能为空',
+                    },
+                    { min: 2, max: 20, message: '标题名称为2-20个字符' },
+                  ],
+                })(
+                  <Input
+                    placeholder="请输入标题"
+                    onInput={e => {
+                      const { value } = e.target;
+                      const { addForm } = this.state;
+                      addForm.title = value;
+                      this.setState({ addForm });
+                    }}
+                  />,
+                )}
+              </FormItem>
+              <FormItem label="图片">
+                {getFieldDecorator('img_url', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '图片地址不能为空',
+                    },
+                    { min: 10, max: 50, message: '图片地址为10-50个字符' },
+                  ],
+                })(
+                  <Input
+                    placeholder="请输入图片地址"
+                    onInput={e => {
+                      const { value } = e.target;
+                      const { addForm } = this.state;
+                      addForm.img_url = value;
+                      this.setState({ addForm });
+                    }}
+                  />,
+                )}
+              </FormItem>
+              <FormItem label="链接地址">
+                {getFieldDecorator('link', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '链接不能为空',
+                    },
+                    { min: 1, max: 50, message: '链接地址为1-50个字符' },
+                  ],
+                })(
+                  <Input
+                    placeholder="请输入链接地址"
+                    onInput={e => {
+                      const { value } = e.target;
+                      const { addForm } = this.state;
+                      addForm.link = value;
+                      this.setState({ addForm });
+                    }}
+                  />,
+                )}
+              </FormItem>
+              <FormItem label="排序">
+                {getFieldDecorator('sort', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '排序不能为空',
+                    },
+                    {
+                      pattern: new RegExp(/^[1-9]\d*$/, "g"),
+                      message: '请输入正确的排序'
+                    }
+                  ],
+                  // 只能输入数字
+                  // getValueFromEvent: (event) => {
+                  //   return event.target.value.replace(/\D/g, '')
+                  // },
+                })(
+                  <Input
+                    placeholder=""
+                    onInput={e => {
+                      const { value } = e.target;
+                      const { addForm } = this.state;
+                      addForm.sort = value;
+                      this.setState({ addForm });
+                    }}
+                  />,
+                )}
+              </FormItem>
+            </Form>
+
+          </Modal>
+
         </Fragment>
       </PageHeaderWrapper>
     );
@@ -206,7 +335,7 @@ class bannerManager extends Component {
   /* 页面渲染--end */
 
   /* 功能函数--sart */
-  // 获取战绩列表
+  // 获取Banner列表
   getBannerList (page) {
     // console.log(this.state.query)
     const {
@@ -227,6 +356,35 @@ class bannerManager extends Component {
     dispatch({
       type: 'bannerManager/fetchBannerList',
       payload,
+    });
+  }
+  addBanner () {
+    this.props.form.validateFields((err, values) => {
+      if (err) {
+        console.log('表单校验错误');
+        return;
+      }
+      const { sort, title, img_url, link, } = this.state.addForm;
+
+      let payload = {
+        title,
+        img_url,
+        link,
+        sort: Number(sort),
+      }
+
+      const { dispatch } = this.props;
+      dispatch({
+        type: 'bannerManager/addBanner',
+        payload,
+        callback: (res) => {
+          message.success(res.msg || '添加成功')
+          this.getBannerList(1);
+          this.setState({
+            addModal: false
+          })
+        }
+      })
     });
   }
   // 分页功能(监听/排序)
@@ -284,4 +442,5 @@ class bannerManager extends Component {
   /* 功能函数--end */
 }
 
-export default bannerManager;
+// export default bannerManager;
+export default Form.create()(bannerManager);

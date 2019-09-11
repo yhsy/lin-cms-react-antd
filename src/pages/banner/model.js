@@ -1,5 +1,5 @@
 import {
-  getBannerList
+  getBannerList, addBanner,
 } from './service';
 
 const bannerModel = {
@@ -19,6 +19,13 @@ const bannerModel = {
         payload: response || [],
       });
     },
+    // 添加banner
+    *addBanner ({ payload, callback }, { call }) {
+      const response = yield call(addBanner, payload);
+      if (response.code === 0) {
+        callback(response)
+      }
+    }
   },
   reducers: {
     // Banner列表
