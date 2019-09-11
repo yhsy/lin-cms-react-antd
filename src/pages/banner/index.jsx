@@ -69,6 +69,8 @@ class bannerManager extends Component {
       is_show: '',
       start_time: null,
       end_time: null,
+      sTime: '',
+      eTime: ''
     },
     showType: ['隐藏', '显示']
   }
@@ -117,7 +119,7 @@ class bannerManager extends Component {
                     <FormItem label="是否显示" style={{ marginBottom: '20px' }}>
                       <Select
                         value={query.is_show}
-                        style={{ width: 130 }}
+                        style={{ width: 80 }}
                         onChange={(value) => {
                           const { query } = this.state;
                           query.is_show = value
@@ -130,16 +132,19 @@ class bannerManager extends Component {
                       </Select>
                     </FormItem>
 
-                    <FormItem label="创建时间">
-                      <RangePicker
-                        value={[query.start_time, query.end_time]}
-                        ranges={{
-                          '今天': [moment(), moment()],
-                          '最近一个月': [moment().startOf('month'), moment().endOf('month')],
-                        }}
-                        onChange={this.changeDate.bind(this)}
-                      />
-                    </FormItem>
+                    {/* 
+                      <FormItem label="创建时间">
+                        <RangePicker
+                          format="YYYY-MM-DD"
+                          value={[query.start_time, query.end_time]}
+                          ranges={{
+                            '今天': [moment(), moment()],
+                            '最近一个月': [moment().startOf('month'), moment().endOf('month')],
+                          }}
+                          onChange={this.changeDate.bind(this)}
+                        />
+                      </FormItem> 
+                    */}
 
                     <FormItem>
                       <Button type="primary" onClick={this.handleQuery.bind(this)} size="large">搜索</Button>
@@ -172,8 +177,8 @@ class bannerManager extends Component {
                   </span>
                 )} />
                 <Column title="创建时间" dataIndex="create_time" />
-                <Column title="更新时间" dataIndex="update_time" />
-                <Column title="备注" dataIndex="desc" />
+                {/* <Column title="更新时间" dataIndex="update_time" /> */}
+                {/* <Column title="备注" dataIndex="desc" /> */}
 
                 <Column
                   title="操作"
@@ -207,13 +212,15 @@ class bannerManager extends Component {
     const {
       limit, query, showType
     } = this.state;
-    const { title, is_show, start_time, end_time, } = this.state.query;
+    // const { title, is_show, start_time, end_time, sTime, eTime } = this.state.query;
+    const { title, is_show } = this.state.query;
+
     let payload = {
       page: Number(page) || 1,
       title,
       is_show,
-      start_time: start_time || '',
-      end_time: end_time || '',
+      // start_time: sTime || '',
+      // end_time: eTime || '',
     }
 
     const { dispatch } = this.props;
@@ -234,8 +241,13 @@ class bannerManager extends Component {
   changeDate (dates, dateString) {
     // 对象拷贝
     const queryData = JSON.parse(JSON.stringify(this.state.query))
+    // console.log(JSON.stringify(dates))
+    // console.log(dateString[0])
     queryData.start_time = dates[0];
     queryData.end_time = dates[1]
+    queryData.sTime = dateString[0]
+    queryData.eTime = dateString[1]
+
 
     this.setState({
       query: queryData
@@ -257,8 +269,8 @@ class bannerManager extends Component {
     const queryData = {
       title: '',
       is_show: '',
-      start_time: null,
-      end_time: null,
+      // start_time: null,
+      // end_time: null,
     }
     this.setState({
       page: 1,

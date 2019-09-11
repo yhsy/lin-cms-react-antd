@@ -12,7 +12,6 @@ const bannerModel = {
   effects: {
     // 获取-Banner列表
     *fetchBannerList ({ payload }, { call, put }) {
-      console.log(`payload is ${JSON.stringify(payload)}`)
       const response = yield call(getBannerList, payload);
       // console.log(JSON.stringify(response))
       yield put({
