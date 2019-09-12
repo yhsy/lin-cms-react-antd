@@ -80,13 +80,14 @@ class bannerManager extends Component {
       img_url: '',
       link: '',
     },
-    id:'',
+    id: '',
     is_show: '',
     editForm: {
       sort: '',
       title: '',
       img_url: '',
       link: '',
+      is_show: '',
     },
     editModal: false,
   }
@@ -107,7 +108,7 @@ class bannerManager extends Component {
 
     const {
       page, limit, query, showType,
-      addForm, addModal, id,editForm, editModal,
+      addForm, addModal, id, editForm, editModal,
     } = this.state
 
     const { getFieldDecorator } = this.props.form;
@@ -116,7 +117,7 @@ class bannerManager extends Component {
     const menus = (record) => {
       return (
         <Menu onClick={this.changeMenu.bind(this, record)}>
-          <Menu.Item  key="1">
+          <Menu.Item key="1">
             {
               record.is_show === 0 && (
                 <a>
@@ -132,12 +133,12 @@ class bannerManager extends Component {
               )
             }
           </Menu.Item>
-          <Menu.Item  key="2">
+          <Menu.Item key="2">
             <a>
               编辑
             </a>
           </Menu.Item>
-          <Menu.Item  key="3">
+          <Menu.Item key="3">
             <a>
               删除
             </a>
@@ -248,10 +249,10 @@ class bannerManager extends Component {
                   title="操作"
                   key="options"
                   render={(text, record) => (
-                  <Dropdown overlay={menus(record)} placement="bottomLeft">
-                    {/* <Button type="link" style={{ padding: 0 }}>查看详情</Button> */}
-                    <Button type="primary" icon="setting"></Button>
-                  </Dropdown>
+                    <Dropdown overlay={menus(record)} placement="bottomLeft">
+                      {/* <Button type="link" style={{ padding: 0 }}>查看详情</Button> */}
+                      <Button type="primary" icon="setting"></Button>
+                    </Dropdown>
                   )}
                 />
               </Table>
@@ -374,6 +375,138 @@ class bannerManager extends Component {
 
           </Modal>
 
+          <Modal
+            title="编辑Banner"
+            visible={editModal}
+            onCancel={() => {
+              this.setState({
+                editModal: false
+              })
+            }}
+            onOk={() => {
+              const { id } = this.state.editForm;
+              this.editBanner(id)
+            }}
+          >
+            <Form>
+              <FormItem label="标题">
+                {getFieldDecorator('title', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '标题不能为空',
+                    },
+                    { min: 2, max: 20, message: '标题名称为2-20个字符' },
+                  ],
+                  initialValue: editForm.title ? editForm.title : ''
+                })(
+                  <Input
+                    placeholder="请输入标题"
+                    onInput={e => {
+                      const { value } = e.target;
+                      const { editForm } = this.state;
+                      editForm.title = value;
+                      this.setState({ editForm });
+                    }}
+                  />,
+                )}
+              </FormItem>
+              <FormItem label="图片">
+                {getFieldDecorator('img_url', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '图片地址不能为空',
+                    },
+                    { min: 10, max: 50, message: '图片地址为10-50个字符' },
+                  ],
+                  initialValue: editForm.img_url ? editForm.img_url : ''
+
+                })(
+                  <Input
+                    placeholder="请输入图片地址"
+                    onInput={e => {
+                      const { value } = e.target;
+                      const { editForm } = this.state;
+                      editForm.img_url = value;
+                      this.setState({ editForm });
+                    }}
+                  />,
+                )}
+              </FormItem>
+              <FormItem label="链接地址">
+                {getFieldDecorator('link', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '链接不能为空',
+                    },
+                    { min: 1, max: 50, message: '链接地址为1-50个字符' },
+                  ],
+                  initialValue: editForm.link ? editForm.link : ''
+                })(
+                  <Input
+                    placeholder="请输入链接地址"
+                    onInput={e => {
+                      const { value } = e.target;
+                      const { editForm } = this.state;
+                      editForm.link = value;
+                      this.setState({ editForm });
+                    }}
+                  />,
+                )}
+              </FormItem>
+              <FormItem label="排序">
+                {getFieldDecorator('sort', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '排序不能为空',
+                    },
+                    {
+                      pattern: new RegExp(/^[1-9]\d*$/, "g"),
+                      message: '请输入正确的排序'
+                    }
+                  ],
+                  initialValue: editForm.sort ? editForm.sort : ''
+                })(
+                  <Input
+                    placeholder=""
+                    onInput={e => {
+                      const { value } = e.target;
+                      const { editForm } = this.state;
+                      editForm.sort = value;
+                      this.setState({ editForm });
+                    }}
+                  />,
+                )}
+              </FormItem>
+              <FormItem label="是否显示">
+                {getFieldDecorator('is_show', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请选择是否显示',
+                    },
+                  ],
+                  initialValue: editForm.is_show ? 1 : 0
+                })(
+                  <Select
+                    style={{ width: 80 }}
+                    onChange={(value) => {
+                      const { editForm } = this.state;
+                      editForm.is_show = value;
+                      this.setState({ editForm });
+                    }}>
+                    <Option value={1}>显示</Option>
+                    <Option value={0}>隐藏</Option>
+                  </Select>
+                )}
+              </FormItem>
+            </Form>
+
+          </Modal>
+
         </Fragment>
       </PageHeaderWrapper>
     );
@@ -441,7 +574,7 @@ class bannerManager extends Component {
         console.log('表单校验错误');
         return;
       }
-      const { sort, title, img_url, link, } = this.state.addForm;
+      const { sort, title, img_url, link, is_show, } = this.state.editForm;
 
       let payload = {
         id,
@@ -449,6 +582,7 @@ class bannerManager extends Component {
         img_url,
         link,
         sort: Number(sort),
+        is_show,
       }
 
       const { dispatch } = this.props;
@@ -466,7 +600,7 @@ class bannerManager extends Component {
     });
   }
   // 是否显示banner
-  editBannerShow (id,is_show) {
+  editBannerShow (id, is_show) {
     const payload = {
       id,
       is_show,
@@ -551,33 +685,35 @@ class bannerManager extends Component {
   }
 
   // 操作功能
-  changeMenu(record,item){
+  changeMenu (record, item) {
     const { key } = item
-    const { id,title } = record
+    const { id } = record
 
-    // // 管理员id
-    // this.setState({
-    //   id,
-    // })
-    // const { editForm } = this.state;
     switch (key) {
       // 显示隐藏
       case '1':
-        const { is_show } = this.state;
-        const isShow = is_show ? 1 : 0;
-        this.editBannerShow(id,isShow);
+        const isShow = record.is_show;
+        const showStatus = isShow ? 0 : 1;
+        this.editBannerShow(id, showStatus);
         break;
       // 修改banner
       case '2':
+        const { title, img_url, link, sort, is_show, } = record;
+        const editForm = {
+          id, title, img_url, link, sort, is_show,
+        }
         this.setState({
+          editForm,
           editModal: true,
         })
         break;
       // 删除banner
       case '3':
+        const bTitle = record.title;
+
         Modal.confirm({
           title: `删除Banner?`,
-          content: `确认删除:${title}吗?`,
+          content: `确认删除:${bTitle}吗?`,
           okText: '确认',
           cancelText: '取消',
           onOk: () => {
