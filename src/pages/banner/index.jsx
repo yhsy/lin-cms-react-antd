@@ -79,7 +79,16 @@ class bannerManager extends Component {
       title: '',
       img_url: '',
       link: '',
-    }
+    },
+    id:'',
+    is_show: '',
+    editForm: {
+      sort: '',
+      title: '',
+      img_url: '',
+      link: '',
+    },
+    editModal: false,
   }
 
   // 页面载入之前(挂载)
@@ -98,10 +107,44 @@ class bannerManager extends Component {
 
     const {
       page, limit, query, showType,
-      addForm, addModal,
+      addForm, addModal, id,editForm, editModal,
     } = this.state
 
     const { getFieldDecorator } = this.props.form;
+
+    // 功能操作菜单
+    const menus = (record) => {
+      return (
+        <Menu onClick={this.changeMenu.bind(this, record)}>
+          <Menu.Item  key="1">
+            {
+              record.is_show === 0 && (
+                <a>
+                  显示
+                </a>
+              )
+            }
+            {
+              record.is_show === 1 && (
+                <a>
+                  隐藏
+                </a>
+              )
+            }
+          </Menu.Item>
+          <Menu.Item  key="2">
+            <a>
+              编辑
+            </a>
+          </Menu.Item>
+          <Menu.Item  key="3">
+            <a>
+              删除
+            </a>
+          </Menu.Item>
+        </Menu>
+      );
+    }
 
     return (
       <PageHeaderWrapper>
@@ -144,7 +187,7 @@ class bannerManager extends Component {
                           </Select>
                         </FormItem>
 
-                        {/* 
+                        {/*
                           <FormItem label="创建时间">
                             <RangePicker
                               format="YYYY-MM-DD"
@@ -155,7 +198,7 @@ class bannerManager extends Component {
                               }}
                               onChange={this.changeDate.bind(this)}
                             />
-                          </FormItem> 
+                          </FormItem>
                         */}
 
                         <FormItem>
@@ -205,7 +248,10 @@ class bannerManager extends Component {
                   title="操作"
                   key="options"
                   render={(text, record) => (
-                    <Button type="link" style={{ padding: 0 }}>查看详情</Button>
+                  <Dropdown overlay={menus(record)} placement="bottomLeft">
+                    {/* <Button type="link" style={{ padding: 0 }}>查看详情</Button> */}
+                    <Button type="primary" icon="setting"></Button>
+                  </Dropdown>
                   )}
                 />
               </Table>
@@ -358,6 +404,7 @@ class bannerManager extends Component {
       payload,
     });
   }
+  // 添加banner
   addBanner () {
     this.props.form.validateFields((err, values) => {
       if (err) {
@@ -387,6 +434,69 @@ class bannerManager extends Component {
       })
     });
   }
+  // 编辑banner
+  editBanner (id) {
+    this.props.form.validateFields((err, values) => {
+      if (err) {
+        console.log('表单校验错误');
+        return;
+      }
+      const { sort, title, img_url, link, } = this.state.addForm;
+
+      let payload = {
+        id,
+        title,
+        img_url,
+        link,
+        sort: Number(sort),
+      }
+
+      const { dispatch } = this.props;
+      dispatch({
+        type: 'bannerManager/editBanner',
+        payload,
+        callback: (res) => {
+          message.success(res.msg || '修改成功')
+          this.getBannerList(1);
+          this.setState({
+            editModal: false
+          })
+        }
+      })
+    });
+  }
+  // 是否显示banner
+  editBannerShow (id,is_show) {
+    const payload = {
+      id,
+      is_show,
+    }
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'bannerManager/editBannerShow',
+      payload,
+      callback: (res) => {
+        message.success(res.msg || '修改成功')
+        this.getBannerList(1);
+      }
+    })
+  }
+  // 删除banner
+  delBanner (id) {
+    const payload = {
+      id
+    }
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'bannerManager/delBanner',
+      payload,
+      callback: (res) => {
+        message.success(res.msg || '删除成功')
+        this.getBannerList(1);
+      }
+    })
+  }
+
   // 分页功能(监听/排序)
   changePage (page) {
     console.log(page)
@@ -438,6 +548,46 @@ class bannerManager extends Component {
       this.getBannerList(1)
     })
 
+  }
+
+  // 操作功能
+  changeMenu(record,item){
+    const { key } = item
+    const { id,title } = record
+
+    // // 管理员id
+    // this.setState({
+    //   id,
+    // })
+    // const { editForm } = this.state;
+    switch (key) {
+      // 显示隐藏
+      case '1':
+        const { is_show } = this.state;
+        const isShow = is_show ? 1 : 0;
+        this.editBannerShow(id,isShow);
+        break;
+      // 修改banner
+      case '2':
+        this.setState({
+          editModal: true,
+        })
+        break;
+      // 删除banner
+      case '3':
+        Modal.confirm({
+          title: `删除Banner?`,
+          content: `确认删除:${title}吗?`,
+          okText: '确认',
+          cancelText: '取消',
+          onOk: () => {
+            this.delBanner(id)
+          },
+        });
+        break;
+      default:
+        break;
+    }
   }
   /* 功能函数--end */
 }
