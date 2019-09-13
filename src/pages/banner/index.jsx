@@ -586,7 +586,7 @@ class bannerManager extends Component {
                     headers={upHeader}
                     action="/api/upload/qiniu_img"
                     beforeUpload={beforeUpload}
-                    onChange={this.UploadImgChange}
+                    onChange={this.UploadImgEditChange}
                   >
                     {this.state.editForm.img_url ? <img src={this.state.editForm.img_url} alt="avatar" style={{
                       width: '472px',
@@ -924,6 +924,44 @@ class bannerManager extends Component {
         //   addForm,
         //   upLoading: false,
         // })
+      } else {
+        message.error(response.msg || '上传失败')
+      }
+
+      // Get this url from response in real world.
+      // 本地预览(本地图片转成Base64)
+      // this.getBase64(info.file.originFileObj, imageUrl =>
+      //   this.setState({
+      //     imageUrl,
+      //     upLoading: false,
+      //   }),
+      // );
+    }
+  };
+
+  // 图片上传
+  UploadImgEditChange = info => {
+    // 上传中
+    if (info.file.status === 'uploading') {
+      this.setState({ upLoading: true });
+      return;
+    }
+    // 上传成功回调
+    if (info.file.status === 'done') {
+      // console.log(info.file)
+      // console.log()
+      // 服务端返回的数据
+      const { response } = info.file;
+      const { editForm } = this.state;
+      if (response.code === 0) {
+        const { img_url } = response.data;
+        editForm.img_url = img_url;
+
+        this.setState({
+          editForm,
+          upLoading: false,
+        })
+
       } else {
         message.error(response.msg || '上传失败')
       }
