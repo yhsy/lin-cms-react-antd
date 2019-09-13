@@ -28,6 +28,8 @@ import {
   Dropdown,
   Pagination,
   DatePicker,
+  Upload,
+  Spin,
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
@@ -48,6 +50,10 @@ const { RangePicker } = DatePicker;
 import moment from 'moment';
 // import gameImg from 'assets/game_1.jpg';
 import styles from './index.less';
+
+// 获取id和token
+import { getUid, getToken } from '@/utils/auth'
+
 
 // 数据
 @connect(({ bannerManager, loading }) => ({
@@ -90,12 +96,23 @@ class bannerManager extends Component {
       is_show: '',
     },
     editModal: false,
+    upLoading: false,
+    imageUrl: '',
+    upHeader: {}
   }
 
   // 页面载入之前(挂载)
   componentDidMount () {
     // 获取列表
     this.getBannerList(1)
+
+    // 设置header头
+    const { upHeader } = this.state;
+    upHeader.id = getUid();
+    upHeader.Authorization = 'Bearer ' + getToken()
+    this.setState({
+      upHeader
+    })
   }
 
   /* 页面渲染--start */
@@ -109,6 +126,7 @@ class bannerManager extends Component {
     const {
       page, limit, query, showType,
       addForm, addModal, id, editForm, editModal,
+      upLoading, imageUrl, upHeader,
     } = this.state
 
     const { getFieldDecorator } = this.props.form;
@@ -146,6 +164,42 @@ class bannerManager extends Component {
         </Menu>
       );
     }
+
+
+
+    // 上传按钮
+    const uploadButton = (
+      <Row gutter={16} type="flex" justify="center" align="middle" style={{ width: '472px', height: '172px' }}>
+        {/* <Col><Icon type={upLoading ? 'loading' : 'plus'} /></Col>
+        <Col>上传Banner</Col> */}
+        <Col>
+          <Icon type={upLoading ? 'loading' : 'plus'} />
+
+          {/* <div>
+            <Icon type={upLoading ? 'loading' : 'plus'} />
+            <div className="ant-upload-text">上传Banner</div>
+          </div> */}
+        </Col>
+      </Row>
+
+      // <div style={{ width: '400px', height: '200px' }}>
+      //   Icon type={upLoading ? 'loading' : 'plus'} />
+      //   <div className="ant-upload-text">上传Banner</div>
+      // </div>
+    );
+    // 图片上传之前校验
+    function beforeUpload (file) {
+      const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+      if (!isJpgOrPng) {
+        message.error('图片上传格式为 JPG/PNG!');
+      }
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isLt2M) {
+        message.error('图片大小不能超过2MB!');
+      }
+      return isJpgOrPng && isLt2M;
+    }
+
 
     return (
       <PageHeaderWrapper>
@@ -279,6 +333,7 @@ class bannerManager extends Component {
               this.addBanner()
             }}
           >
+            {/* <Spin spinning={upLoading}> */}
             <Form>
               <FormItem label="标题">
                 {getFieldDecorator('title', {
@@ -301,25 +356,95 @@ class bannerManager extends Component {
                   />,
                 )}
               </FormItem>
-              <FormItem label="图片">
+              {/* 
+                <FormItem label="图片">
+                  {getFieldDecorator('img_url', {
+                    rules: [
+                      {
+                        required: true,
+                        message: '图片地址不能为空',
+                      },
+                      { min: 10, max: 50, message: '图片地址为10-50个字符' },
+                    ],
+                  })(
+                    <Input
+                      placeholder="请输入图片地址"
+                      onInput={e => {
+                        const { value } = e.target;
+                        const { addForm } = this.state;
+                        addForm.img_url = value;
+                        this.setState({ addForm });
+                      }}
+                    />,
+                  )}
+                </FormItem> 
+              */}
+
+              {/* 
+                <FormItem label="图片地址">
+                  {getFieldDecorator('imageUrl', {
+                    rules: [
+                      {
+                        required: true,
+                        message: '图片地址不能为空',
+                      },
+                    ],
+                  })(
+                    <Upload
+                      // name='file'
+                      name="avatar"
+                      listType="picture-card"
+                      style={{
+                        width: '472px',
+                        height: '172px'
+                      }}
+                      // className="avatar-uploader"
+                      showUploadList={false}
+                      // 请求头一定要带上(id和token)
+                      headers={upHeader}
+                      action="/api/upload/qiniu_img"
+                      beforeUpload={beforeUpload}
+                      onChange={this.UploadImgChange}
+                    >
+                      {imageUrl ? <img src={imageUrl} alt="avatar" style={{
+                        width: '472px',
+                        height: '172px'
+                      }} /> : uploadButton}
+                    </Upload>
+                  )}
+                </FormItem> 
+              */}
+
+              <FormItem label="图片地址">
                 {getFieldDecorator('img_url', {
                   rules: [
                     {
                       required: true,
                       message: '图片地址不能为空',
                     },
-                    { min: 10, max: 50, message: '图片地址为10-50个字符' },
                   ],
                 })(
-                  <Input
-                    placeholder="请输入图片地址"
-                    onInput={e => {
-                      const { value } = e.target;
-                      const { addForm } = this.state;
-                      addForm.img_url = value;
-                      this.setState({ addForm });
+                  <Upload
+                    // name='file'
+                    name="avatar"
+                    listType="picture-card"
+                    style={{
+                      width: '472px',
+                      height: '172px'
                     }}
-                  />,
+                    // className="avatar-uploader"
+                    showUploadList={false}
+                    // 请求头一定要带上(id和token)
+                    headers={upHeader}
+                    action="/api/upload/qiniu_img"
+                    beforeUpload={beforeUpload}
+                    onChange={this.UploadImgChange}
+                  >
+                    {this.state.addForm.img_url ? <img src={this.state.addForm.img_url} alt="avatar" style={{
+                      width: '472px',
+                      height: '172px'
+                    }} /> : uploadButton}
+                  </Upload>
                 )}
               </FormItem>
               <FormItem label="链接地址">
@@ -372,6 +497,7 @@ class bannerManager extends Component {
                 )}
               </FormItem>
             </Form>
+            {/* </Spin> */}
 
           </Modal>
 
@@ -411,27 +537,62 @@ class bannerManager extends Component {
                   />,
                 )}
               </FormItem>
-              <FormItem label="图片">
+              {/* 
+                <FormItem label="图片">
+                  {getFieldDecorator('img_url', {
+                    rules: [
+                      {
+                        required: true,
+                        message: '图片地址不能为空',
+                      },
+                      // { min: 10, max: 50, message: '图片地址为10-50个字符' },
+                    ],
+                    initialValue: editForm.img_url ? editForm.img_url : ''
+
+                  })(
+                    <Input
+                      placeholder="请输入图片地址"
+                      onInput={e => {
+                        const { value } = e.target;
+                        const { editForm } = this.state;
+                        editForm.img_url = value;
+                        this.setState({ editForm });
+                      }}
+                    />,
+                  )}
+                </FormItem>
+              */}
+              <FormItem label="图片地址">
                 {getFieldDecorator('img_url', {
                   rules: [
                     {
                       required: true,
                       message: '图片地址不能为空',
                     },
-                    { min: 10, max: 50, message: '图片地址为10-50个字符' },
                   ],
-                  initialValue: editForm.img_url ? editForm.img_url : ''
-
+                  // initialValue: editForm.img_url ? editForm.img_url : ''
                 })(
-                  <Input
-                    placeholder="请输入图片地址"
-                    onInput={e => {
-                      const { value } = e.target;
-                      const { editForm } = this.state;
-                      editForm.img_url = value;
-                      this.setState({ editForm });
+                  <Upload
+                    // name='file'
+                    name="avatar"
+                    listType="picture-card"
+                    style={{
+                      width: '472px',
+                      height: '172px'
                     }}
-                  />,
+                    // className="avatar-uploader"
+                    showUploadList={false}
+                    // 请求头一定要带上(id和token)
+                    headers={upHeader}
+                    action="/api/upload/qiniu_img"
+                    beforeUpload={beforeUpload}
+                    onChange={this.UploadImgChange}
+                  >
+                    {this.state.editForm.img_url ? <img src={this.state.editForm.img_url} alt="avatar" style={{
+                      width: '472px',
+                      height: '172px'
+                    }} /> : uploadButton}
+                  </Upload>
                 )}
               </FormItem>
               <FormItem label="链接地址">
@@ -508,7 +669,7 @@ class bannerManager extends Component {
           </Modal>
 
         </Fragment>
-      </PageHeaderWrapper>
+      </PageHeaderWrapper >
     );
   }
   /* 页面渲染--end */
@@ -540,6 +701,7 @@ class bannerManager extends Component {
   // 添加banner
   addBanner () {
     this.props.form.validateFields((err, values) => {
+      console.log(err, values)
       if (err) {
         console.log('表单校验错误');
         return;
@@ -725,6 +887,57 @@ class bannerManager extends Component {
         break;
     }
   }
+
+  // 图片转成Base64格式
+  getBase64 (img, callback) {
+    const reader = new FileReader();
+    reader.addEventListener('load', () => callback(reader.result));
+    reader.readAsDataURL(img);
+  }
+  // 图片上传
+  UploadImgChange = info => {
+    // 上传中
+    if (info.file.status === 'uploading') {
+      this.setState({ upLoading: true });
+      return;
+    }
+    // 上传成功回调
+    if (info.file.status === 'done') {
+      console.log(info.file)
+      // console.log()
+      // 服务端返回的数据
+      const { response } = info.file;
+      const { addForm } = this.state;
+      if (response.code === 0) {
+        const { img_url } = response.data;
+        addForm.img_url = img_url;
+        // console.log(`addForm is ${JSON.stringify(addForm)}`)
+
+        this.setState({
+          imageUrl: img_url,
+          addForm,
+          upLoading: false,
+        })
+
+        // addForm.img_url = img_url
+        // this.setState({
+        //   addForm,
+        //   upLoading: false,
+        // })
+      } else {
+        message.error(response.msg || '上传失败')
+      }
+
+      // Get this url from response in real world.
+      // 本地预览(本地图片转成Base64)
+      // this.getBase64(info.file.originFileObj, imageUrl =>
+      //   this.setState({
+      //     imageUrl,
+      //     upLoading: false,
+      //   }),
+      // );
+    }
+  };
   /* 功能函数--end */
 }
 
