@@ -19,3 +19,10 @@ export async function changePassword (data) {
   });
 }
 
+// 上传图片(七牛云)
+export async function uploadImg (data) {
+  return request('/upload/qiniu_img', {
+    method: 'POST',
+    data,
+  });
+}

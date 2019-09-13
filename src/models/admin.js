@@ -3,7 +3,7 @@ import { stringify } from 'querystring';
 import { setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
 
-import { loginPwd, getInfo, changePassword } from '@/services/admin';
+import { loginPwd, getInfo, changePassword, uploadImg } from '@/services/admin';
 import { message } from 'antd';
 
 // md5加密
@@ -138,6 +138,13 @@ const AdminModel = {
             }),
           }),
         );
+      }
+    },
+    // 上传图片
+    *uploadImg ({ payload, callback }, { call, put }) {
+      const response = yield call(uploadImg, payload);
+      if (response.code === 0) {
+        callback(response)
       }
     },
   },
