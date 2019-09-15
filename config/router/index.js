@@ -35,6 +35,13 @@ const router = [
             icon: 'picture',
             component: './banner',
           },
+          // 栏目管理
+          {
+            path: '/columns',
+            name: 'Columns',
+            icon: 'apartment',
+            component: './columns',
+          },
           {
             component: './404',
           },
