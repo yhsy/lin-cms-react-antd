@@ -81,10 +81,11 @@ class columnsManager extends Component {
     showType: ['隐藏', '显示'],
     addModal: false,
     addForm: {
-      sort: '',
-      title: '',
-      img_url: '',
+      type: '',
+      cname: '',
       link: '',
+      sort: '',
+      img_url: '',
     },
     id: '',
     status: '',
@@ -252,13 +253,15 @@ class columnsManager extends Component {
                         </FormItem>
                       </Form>
                     </Col>
-                    {/* <Col>
+                    <Col>
                       <Button type="primary" onClick={() => {
+                        // 表单重置
+                        this.props.form.resetFields();
                         this.setState({
                           addModal: true
                         })
                       }} >添加栏目</Button>
-                    </Col> */}
+                    </Col>
                   </Row>
                 </div>
 
@@ -328,8 +331,29 @@ class columnsManager extends Component {
           >
             {/* <Spin spinning={upLoading}> */}
             <Form>
-              <FormItem label="标题">
-                {getFieldDecorator('title', {
+              <FormItem label="栏目类型">
+                {getFieldDecorator('type', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请选择栏目类型',
+                    },
+                  ],
+                })(
+                  <Select
+                    style={{ width: 130 }}
+                    onChange={(value) => {
+                      const { addForm } = this.state;
+                      addForm.type = value;
+                      this.setState({ addForm });
+                    }}>
+                    <Option value={1}>新闻资讯</Option>
+                    <Option value={2}>人才招聘</Option>
+                  </Select>
+                )}
+              </FormItem>
+              <FormItem label="栏目名称">
+                {getFieldDecorator('cname', {
                   rules: [
                     {
                       required: true,
@@ -339,49 +363,51 @@ class columnsManager extends Component {
                   ],
                 })(
                   <Input
-                    placeholder="请输入标题"
+                    placeholder="请输入栏目名称"
                     onInput={e => {
                       const { value } = e.target;
                       const { addForm } = this.state;
-                      addForm.title = value;
+                      addForm.cname = value;
                       this.setState({ addForm });
                     }}
                   />,
                 )}
               </FormItem>
 
-              <FormItem label="图片地址">
-                {getFieldDecorator('img_url', {
-                  rules: [
-                    {
-                      required: true,
-                      message: '图片地址不能为空',
-                    },
-                  ],
-                })(
-                  <Upload
-                    // name='file'
-                    name="avatar"
-                    listType="picture-card"
-                    style={{
-                      width: '472px',
-                      height: '172px'
-                    }}
-                    // className="avatar-uploader"
-                    showUploadList={false}
-                    // 请求头一定要带上(id和token)
-                    headers={upHeader}
-                    action="/api/upload/qiniu_img"
-                    beforeUpload={beforeUpload}
-                    onChange={this.UploadImgChange}
-                  >
-                    {this.state.addForm.img_url ? <img src={this.state.addForm.img_url} alt="avatar" style={{
-                      width: '472px',
-                      height: '172px'
-                    }} /> : uploadButton}
-                  </Upload>
-                )}
-              </FormItem>
+              {/*
+                <FormItem label="图片地址">
+                  {getFieldDecorator('img_url', {
+                    rules: [
+                      {
+                        required: true,
+                        message: '图片地址不能为空',
+                      },
+                    ],
+                  })(
+                    <Upload
+                      // name='file'
+                      name="avatar"
+                      listType="picture-card"
+                      style={{
+                        width: '472px',
+                        height: '172px'
+                      }}
+                      // className="avatar-uploader"
+                      showUploadList={false}
+                      // 请求头一定要带上(id和token)
+                      headers={upHeader}
+                      action="/api/upload/qiniu_img"
+                      beforeUpload={beforeUpload}
+                      onChange={this.UploadImgChange}
+                    >
+                      {this.state.addForm.img_url ? <img src={this.state.addForm.img_url} alt="avatar" style={{
+                        width: '472px',
+                        height: '172px'
+                      }} /> : uploadButton}
+                    </Upload>
+                  )}
+                </FormItem>
+              */}
               <FormItem label="链接地址">
                 {getFieldDecorator('link', {
                   rules: [
@@ -403,40 +429,12 @@ class columnsManager extends Component {
                   />,
                 )}
               </FormItem>
-              <FormItem label="排序">
-                {getFieldDecorator('sort', {
-                  rules: [
-                    {
-                      required: true,
-                      message: '排序不能为空',
-                    },
-                    {
-                      pattern: new RegExp(/^[1-9]\d*$/, "g"),
-                      message: '请输入正确的排序'
-                    }
-                  ],
-                  // 只能输入数字
-                  // getValueFromEvent: (event) => {
-                  //   return event.target.value.replace(/\D/g, '')
-                  // },
-                })(
-                  <Input
-                    placeholder=""
-                    onInput={e => {
-                      const { value } = e.target;
-                      const { addForm } = this.state;
-                      addForm.sort = value;
-                      this.setState({ addForm });
-                    }}
-                  />,
-                )}
-              </FormItem>
             </Form>
             {/* </Spin> */}
 
           </Modal>
 
-          <Modal
+          {/* <Modal
             title="编辑栏目"
             visible={editModal}
             onCancel={() => {
@@ -576,7 +574,7 @@ class columnsManager extends Component {
               </FormItem>
             </Form>
 
-          </Modal>
+          </Modal> */}
 
         </Fragment>
       </PageHeaderWrapper >
@@ -613,18 +611,18 @@ class columnsManager extends Component {
   // 添加banner
   addColumns () {
     this.props.form.validateFields((err, values) => {
-      console.log(err, values)
+      // console.log(err, values)
       if (err) {
         console.log('表单校验错误');
         return;
       }
-      const { sort, title, img_url, link, } = this.state.addForm;
+      const { type,cname, link, } = this.state.addForm;
+
 
       let payload = {
-        title,
-        img_url,
+        type,
+        cname,
         link,
-        sort: Number(sort),
       }
 
       const { dispatch } = this.props;
