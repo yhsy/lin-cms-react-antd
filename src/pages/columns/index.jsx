@@ -81,20 +81,22 @@ class columnsManager extends Component {
     showType: ['隐藏', '显示'],
     addModal: false,
     addForm: {
+      cid:'',
       type: '',
       cname: '',
       link: '',
-      sort: '',
-      img_url: '',
     },
+    modalTitle: '',
+    modalType: '',
     id: '',
     status: '',
     editForm: {
-      sort: '',
-      title: '',
-      img_url: '',
+      cid:'',
+      type: '',
+      cname: '',
       link: '',
-      status: '',
+      // sort: '',
+      // img_url: '',
     },
     editModal: false,
     upLoading: false,
@@ -126,7 +128,7 @@ class columnsManager extends Component {
 
     const {
       page, limit, query, showType,
-      addForm, addModal,
+      addForm, addModal,modalTitle,modalType,
       id, editForm, editModal,
       upLoading, imageUrl, upHeader,
     } = this.state
@@ -258,8 +260,17 @@ class columnsManager extends Component {
                       <Button type="primary" onClick={() => {
                         // 表单重置
                         this.props.form.resetFields();
+                        const addForm = {
+                          cid:'',
+                          type: '',
+                          cname: '',
+                          link: '',
+                        }
                         this.setState({
-                          addModal: true
+                          addForm,
+                          addModal: true,
+                          modalTitle: '添加栏目',
+                          modalType: 'add',
                         })
                       }} >添加栏目</Button>
                     </Col>
@@ -274,7 +285,7 @@ class columnsManager extends Component {
                 rowKey="cid"
                 pagination={false}
                 loading={loading}
-              >
+                >
                 <Column title="ID" dataIndex="cid" />
                 {/* <Column title="排序" dataIndex="sort" /> */}
                 <Column title="标题" dataIndex="cname" />
@@ -319,7 +330,7 @@ class columnsManager extends Component {
           </div>
 
           <Modal
-            title="添加栏目"
+            title={modalTitle}
             visible={addModal}
             onCancel={() => {
               this.setState({
@@ -327,7 +338,13 @@ class columnsManager extends Component {
               })
             }}
             onOk={() => {
-              this.addColumns()
+              const { modalType } = this.state;
+              if(modalType === 'add') {
+                this.addColumns()
+              } else {
+                const { cid } = this.state.addForm;
+                this.editColumns(cid)
+              }
             }}
           >
             {/* <Spin spinning={upLoading}> */}
@@ -340,6 +357,7 @@ class columnsManager extends Component {
                       message: '请选择栏目类型',
                     },
                   ],
+                  initialValue: addForm.type ? addForm.type : ''
                 })(
                   <Select
                     style={{ width: 130 }}
@@ -362,6 +380,7 @@ class columnsManager extends Component {
                     },
                     { min: 2, max: 20, message: '标题名称为2-20个字符' },
                   ],
+                  initialValue: addForm.cname ? addForm.cname : ''
                 })(
                   <Input
                     placeholder="请输入栏目名称"
@@ -418,6 +437,7 @@ class columnsManager extends Component {
                     },
                     { min: 1, max: 50, message: '链接地址为1-50个字符' },
                   ],
+                  initialValue: addForm.link ? addForm.link : ''
                 })(
                   <Input
                     placeholder="请输入链接地址"
@@ -641,21 +661,18 @@ class columnsManager extends Component {
     });
   }
   // 编辑banner
-  editColumns (id) {
+  editColumns (cid) {
     this.props.form.validateFields((err, values) => {
       if (err) {
         console.log('表单校验错误');
         return;
       }
-      const { sort, title, img_url, link, status, } = this.state.editForm;
-
+      const { cid,type,cname,link, } = this.state.addForm;
       let payload = {
-        id,
-        title,
-        img_url,
+        cid,
+        type,
+        cname,
         link,
-        sort: Number(sort),
-        status,
       }
 
       const { dispatch } = this.props;
@@ -666,7 +683,7 @@ class columnsManager extends Component {
           message.success(res.msg || '修改成功')
           this.getColumnsList(1);
           this.setState({
-            editModal: false
+            addModal: false
           })
         }
       })
@@ -674,6 +691,7 @@ class columnsManager extends Component {
   }
   // 是否显示banner
   editColumnsShow (cid, status) {
+    // console.log(cid,status);
     const payload = {
       cid,
       status,
@@ -760,23 +778,35 @@ class columnsManager extends Component {
   changeMenu (record, item) {
     const { key } = item
     const { cid } = record
+    // console.log(`cid:${cid}`)
 
     switch (key) {
       // 显示隐藏
       case '1':
         const isShow = record.status;
         const showStatus = isShow ? 0 : 1;
-        this.editColumnsShow(cid, showStatus);
+        this.editColumnsShow(record.cid, showStatus);
         break;
       // 修改banner
       case '2':
-        const { title, img_url, link, sort, status, } = record;
-        const editForm = {
-          id, title, img_url, link, sort, status,
+        const {
+          cid,
+          type,
+          cname,
+          link,
+        } = record;
+
+        const addForm = {
+          cid,
+          type,
+          cname,
+          link,
         }
         this.setState({
-          editForm,
-          editModal: true,
+          addForm,
+          addModal:true,
+          modalTitle: '编辑栏目',
+          modalType: 'edit',
         })
         break;
       // 删除banner
