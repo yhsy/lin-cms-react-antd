@@ -126,7 +126,8 @@ class columnsManager extends Component {
 
     const {
       page, limit, query, showType,
-      addForm, addModal, id, editForm, editModal,
+      addForm, addModal,
+      id, editForm, editModal,
       upLoading, imageUrl, upHeader,
     } = this.state
 
@@ -298,11 +299,11 @@ class columnsManager extends Component {
                   title="操作"
                   key="options"
                   render={(text, record) => (
-                    <Button type="link" style={{ padding: 0 }}>查看详情</Button>
+                    // <Button type="link" style={{ padding: 0 }}>查看详情</Button>
 
-                    // <Dropdown overlay={menus(record)} placement="bottomLeft">
-                    //   <Button type="primary" icon="setting"></Button>
-                    // </Dropdown>
+                    <Dropdown overlay={menus(record)} placement="bottomLeft">
+                      <Button type="primary" icon="setting"></Button>
+                    </Dropdown>
                   )}
                 />
               </Table>
@@ -672,14 +673,14 @@ class columnsManager extends Component {
     });
   }
   // 是否显示banner
-  editColumnsShow (id, status) {
+  editColumnsShow (cid, status) {
     const payload = {
-      id,
+      cid,
       status,
     }
     const { dispatch } = this.props;
     dispatch({
-      type: 'columnsManager/editColumnsShow',
+      type: 'columnsManager/editColumns',
       payload,
       callback: (res) => {
         message.success(res.msg || '修改成功')
@@ -688,9 +689,9 @@ class columnsManager extends Component {
     })
   }
   // 删除banner
-  delColumns (id) {
+  delColumns (cid) {
     const payload = {
-      id
+      cid
     }
     const { dispatch } = this.props;
     dispatch({
@@ -758,14 +759,14 @@ class columnsManager extends Component {
   // 操作功能
   changeMenu (record, item) {
     const { key } = item
-    const { id } = record
+    const { cid } = record
 
     switch (key) {
       // 显示隐藏
       case '1':
         const isShow = record.status;
         const showStatus = isShow ? 0 : 1;
-        this.editColumnsShow(id, showStatus);
+        this.editColumnsShow(cid, showStatus);
         break;
       // 修改banner
       case '2':
@@ -780,15 +781,15 @@ class columnsManager extends Component {
         break;
       // 删除banner
       case '3':
-        const bTitle = record.title;
+        const bTitle = record.cname;
 
         Modal.confirm({
           title: `删除栏目?`,
-          content: `确认删除:${bTitle}吗?`,
+          content: `确认删除栏目:${bTitle}吗?`,
           okText: '确认',
           cancelText: '取消',
           onOk: () => {
-            this.delColumns(id)
+            this.delColumns(cid)
           },
         });
         break;
