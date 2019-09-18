@@ -36,7 +36,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 // Antd子组件注册
 // const { Step } = Steps;
 // const { TabPane } = Tabs;
-// const { TextArea } = Input;
+const { TextArea } = Input;
 // const RadioGroup = Radio.Group;
 const InputGroup = Input.Group;
 const FormItem = Form.Item;
@@ -84,9 +84,13 @@ class articleManager extends Component {
     addModal: false,
     addForm: {
       id: '',
-      type: '',
-      cname: '',
-      link: '',
+      cid: '',
+      title: '',
+      author: '',
+      cover: '',
+      url: '',
+      description: '',
+      content: '',
     },
     modalTitle: '',
     modalType: '',
@@ -259,15 +263,19 @@ class articleManager extends Component {
                         </FormItem>
                       </Form>
                     </Col>
-                    {/* <Col>
+                    <Col>
                       <Button type="primary" onClick={() => {
                         // 表单重置
                         this.props.form.resetFields();
                         const addForm = {
                           id: '',
-                          type: '',
-                          cname: '',
-                          link: '',
+                          cid: '',
+                          title: '',
+                          author: '',
+                          url: '',
+                          description: '',
+                          cover: '',
+                          content: '',
                         }
                         this.setState({
                           addForm,
@@ -276,7 +284,7 @@ class articleManager extends Component {
                           modalType: 'add',
                         })
                       }} >添加文章</Button>
-                    </Col> */}
+                    </Col>
                   </Row>
                 </div>
 
@@ -357,87 +365,107 @@ class articleManager extends Component {
           >
             {/* <Spin spinning={upLoading}> */}
             <Form>
-              <FormItem label="文章类型">
-                {getFieldDecorator('type', {
+              <FormItem label="所属栏目">
+                {getFieldDecorator('cid', {
                   rules: [
                     {
                       required: true,
-                      message: '请选择文章类型',
+                      message: '请选择栏目',
                     },
                   ],
-                  initialValue: addForm.type ? addForm.type : ''
+                  initialValue: addForm.cid ? addForm.cid : ''
                 })(
                   <Select
                     style={{ width: 130 }}
                     onChange={(value) => {
                       const { addForm } = this.state;
-                      addForm.type = value;
+                      addForm.cid = value;
                       this.setState({ addForm });
                     }}>
-                    <Option value={1}>新闻资讯</Option>
-                    <Option value={2}>人才招聘</Option>
+                    <Option value={101}>公司新闻</Option>
+                    <Option value={102}>行业新闻</Option>
                   </Select>
                 )}
               </FormItem>
-              <FormItem label="文章名称">
-                {getFieldDecorator('cname', {
+              <FormItem label="标题">
+                {getFieldDecorator('title', {
                   rules: [
                     {
                       required: true,
                       message: '标题不能为空',
                     },
-                    { min: 2, max: 20, message: '标题名称为2-20个字符' },
+                    { min: 2, max: 30, message: '标题为2-30个字符' },
                   ],
-                  initialValue: addForm.cname ? addForm.cname : ''
+                  initialValue: addForm.title ? addForm.title : ''
                 })(
                   <Input
-                    placeholder="请输入文章名称"
+                    placeholder="请输入标题"
                     onInput={e => {
                       const { value } = e.target;
                       const { addForm } = this.state;
-                      addForm.cname = value;
+                      addForm.title = value;
                       this.setState({ addForm });
                     }}
                   />,
                 )}
               </FormItem>
-
-              {/*
-                <FormItem label="图片地址">
-                  {getFieldDecorator('img_url', {
-                    rules: [
-                      {
-                        required: true,
-                        message: '图片地址不能为空',
-                      },
-                    ],
-                  })(
-                    <Upload
-                      // name='file'
-                      name="avatar"
-                      listType="picture-card"
-                      style={{
-                        width: '472px',
-                        height: '172px'
-                      }}
-                      // className="avatar-uploader"
-                      showUploadList={false}
-                      // 请求头一定要带上(id和token)
-                      headers={upHeader}
-                      action="/api/upload/qiniu_img"
-                      beforeUpload={beforeUpload}
-                      onChange={this.UploadImgChange}
-                    >
-                      {this.state.addForm.img_url ? <img src={this.state.addForm.img_url} alt="avatar" style={{
-                        width: '472px',
-                        height: '172px'
-                      }} /> : uploadButton}
-                    </Upload>
-                  )}
-                </FormItem>
-              */}
+              <FormItem label="作者">
+                {getFieldDecorator('author', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '作者不能为空',
+                    },
+                    { min: 2, max: 10, message: '作者为2-10个字符' },
+                  ],
+                  initialValue: addForm.author ? addForm.author : ''
+                })(
+                  <Input
+                    placeholder="请输入标题"
+                    onInput={e => {
+                      const { value } = e.target;
+                      const { addForm } = this.state;
+                      addForm.author = value;
+                      this.setState({ addForm });
+                    }}
+                  />,
+                )}
+              </FormItem>
+              <FormItem label="封面图片">
+                {getFieldDecorator('cover', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '封面图片不能为空',
+                    },
+                  ],
+                  initialValue: addForm.cover ? addForm.cover : ''
+                })(
+                  <Upload
+                    // name='file'
+                    name="avatar"
+                    listType="picture-card"
+                    style={{
+                      width: '472px',
+                      height: '172px'
+                    }}
+                    // className="avatar-uploader"
+                    showUploadList={false}
+                    // 请求头一定要带上(id和token)
+                    headers={upHeader}
+                    action="/api/upload/qiniu_img"
+                    beforeUpload={beforeUpload}
+                    onChange={this.UploadImgChange}
+                  >
+                    {this.state.addForm.cover ? <img src={this.state.addForm.cover} alt="avatar" style={{
+                      width: '472px',
+                      height: '172px'
+                    }} /> : uploadButton}
+                  </Upload>
+                )}
+              </FormItem>
               <FormItem label="链接地址">
-                {getFieldDecorator('link', {
+                {getFieldDecorator('url', {
                   rules: [
                     {
                       required: true,
@@ -445,17 +473,58 @@ class articleManager extends Component {
                     },
                     { min: 1, max: 50, message: '链接地址为1-50个字符' },
                   ],
-                  initialValue: addForm.link ? addForm.link : ''
+                  initialValue: addForm.url ? addForm.url : ''
                 })(
                   <Input
                     placeholder="请输入链接地址"
                     onInput={e => {
                       const { value } = e.target;
                       const { addForm } = this.state;
-                      addForm.link = value;
+                      addForm.url = value;
                       this.setState({ addForm });
                     }}
                   />,
+                )}
+              </FormItem>
+              <FormItem label="描述">
+                {getFieldDecorator('description', {
+                  rules: [
+                    { max: 30, message: '描述最多30个字符' },
+                  ],
+                  initialValue: addForm.description ? addForm.description : ''
+                })(
+                  <Input
+                    placeholder="请输入描述"
+                    onInput={e => {
+                      const { value } = e.target;
+                      const { addForm } = this.state;
+                      addForm.description = value;
+                      this.setState({ addForm });
+                    }}
+                  />,
+                )}
+              </FormItem>
+              <FormItem label="内容">
+                {getFieldDecorator('content', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '内容不能为空',
+                    },
+                    { max: 100000, message: '内容最多10万个字' },
+                  ],
+                  initialValue: addForm.content ? addForm.content : ''
+                })(
+                  <TextArea
+                    autosize={{ minRows: 3, maxRows: 20 }}
+                    placeholder="请输入文章内容"
+                    onInput={e => {
+                      const { value } = e.target;
+                      const { addForm } = this.state;
+                      addForm.content = value;
+                      this.setState({ addForm });
+                    }}
+                  />
                 )}
               </FormItem>
             </Form>
@@ -517,14 +586,24 @@ class articleManager extends Component {
         return;
       }
       const {
-        type, cname, link,
+        cid,
+        title,
+        author,
+        cover,
+        url,
+        description,
+        content,
       } = this.state.addForm;
 
 
       let payload = {
-        type,
-        cname,
-        link,
+        cid,
+        title,
+        author,
+        cover,
+        url,
+        description,
+        content,
       }
 
       const { dispatch } = this.props;
@@ -735,11 +814,11 @@ class articleManager extends Component {
       const { addForm } = this.state;
       if (response.code === 0) {
         const { img_url } = response.data;
-        addForm.img_url = img_url;
+        addForm.cover = img_url;
         // console.log(`addForm is ${JSON.stringify(addForm)}`)
 
         this.setState({
-          imageUrl: img_url,
+          // imageUrl: img_url,
           addForm,
           upLoading: false,
         })
