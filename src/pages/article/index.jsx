@@ -49,7 +49,7 @@ const { RangePicker } = DatePicker;
 // 日期插件
 import moment from 'moment';
 
-import styles from './index.less';
+// import styles from './index.less';
 
 // 获取id和token
 import { getUid, getToken } from '@/utils/auth'
@@ -72,7 +72,7 @@ class articleManager extends Component {
     // 搜索条件
     query: {
       // 文章所属栏目id
-      cid:'',
+      cid: '',
       title: '',
       status: '',
       start_time: null,
@@ -83,7 +83,7 @@ class articleManager extends Component {
     showType: ['隐藏', '显示'],
     addModal: false,
     addForm: {
-      id:'',
+      id: '',
       type: '',
       cname: '',
       link: '',
@@ -93,7 +93,7 @@ class articleManager extends Component {
     id: '',
     status: '',
     editForm: {
-      id:'',
+      id: '',
       type: '',
       cname: '',
       link: '',
@@ -131,7 +131,7 @@ class articleManager extends Component {
 
     const {
       page, limit, query, showType,
-      addForm, addModal,modalTitle,modalType,
+      addForm, addModal, modalTitle, modalType,
       id, editForm, editModal,
       upLoading, imageUrl, upHeader,
     } = this.state
@@ -209,11 +209,11 @@ class articleManager extends Component {
                       <Form layout="inline">
                         <FormItem label="标题">
                           <Input
-                            value={query.cname}
+                            value={query.title}
                             onChange={(e) => {
                               const { query } = this.state;
                               const { value } = e.target;
-                              query.cname = value;
+                              query.title = value;
                               this.setState({
                                 query
                               })
@@ -259,12 +259,12 @@ class articleManager extends Component {
                         </FormItem>
                       </Form>
                     </Col>
-                    <Col>
+                    {/* <Col>
                       <Button type="primary" onClick={() => {
                         // 表单重置
                         this.props.form.resetFields();
                         const addForm = {
-                          id:'',
+                          id: '',
                           type: '',
                           cname: '',
                           link: '',
@@ -276,7 +276,7 @@ class articleManager extends Component {
                           modalType: 'add',
                         })
                       }} >添加文章</Button>
-                    </Col>
+                    </Col> */}
                   </Row>
                 </div>
 
@@ -288,14 +288,14 @@ class articleManager extends Component {
                 rowKey="id"
                 pagination={false}
                 loading={loading}
-                >
+              >
                 <Column title="ID" dataIndex="id" />
                 <Column title="标题" dataIndex="title" />
                 <Column title="作者" dataIndex="author" />
                 <Column title="链接地址" dataIndex="url" />
-                <Column title="浏览量" dataIndex="pageviews" />
+                {/* <Column title="浏览量" dataIndex="pageviews" /> */}
                 <Column title="封面图" dataIndex="cover" render={(text, record) => (
-                  <img src={text} alt="" style={{width:'100px'}} />
+                  <img src={text} alt="" style={{ width: '100px' }} />
                 )} />
                 <Column title="描述" dataIndex="description" />
                 <Column title="是否显示" dataIndex="status" render={(text, record) => (
@@ -318,11 +318,11 @@ class articleManager extends Component {
                   title="操作"
                   key="options"
                   render={(text, record) => (
-                    // <Button type="link" style={{ padding: 0 }}>查看详情</Button>
+                    <Button type="link" style={{ padding: 0 }}>查看详情</Button>
 
-                    <Dropdown overlay={menus(record)} placement="bottomLeft">
-                      <Button type="primary" icon="setting"></Button>
-                    </Dropdown>
+                    // <Dropdown overlay={menus(record)} placement="bottomLeft">
+                    //   <Button type="primary" icon="setting"></Button>
+                    // </Dropdown>
                   )}
                 />
               </Table>
@@ -347,7 +347,7 @@ class articleManager extends Component {
             }}
             onOk={() => {
               const { modalType } = this.state;
-              if(modalType === 'add') {
+              if (modalType === 'add') {
                 this.addArticle()
               } else {
                 const { id } = this.state.addForm;
@@ -488,6 +488,8 @@ class articleManager extends Component {
       eTime,
     } = this.state.query
 
+    console.log(`title:${title}`)
+
 
     let payload = {
       page: Number(page) || 1,
@@ -515,7 +517,7 @@ class articleManager extends Component {
         return;
       }
       const {
-        type,cname, link,
+        type, cname, link,
       } = this.state.addForm;
 
 
@@ -546,7 +548,7 @@ class articleManager extends Component {
         console.log('表单校验错误');
         return;
       }
-      const { id,type,cname,link, } = this.state.addForm;
+      const { id, type, cname, link, } = this.state.addForm;
       let payload = {
         id,
         type,
@@ -617,7 +619,11 @@ class articleManager extends Component {
     queryData.start_time = dates[0];
     queryData.end_time = dates[1]
     queryData.sTime = dateString[0]
+
     queryData.eTime = dateString[1]
+    // const endTime = moment(dates[1].add(1, 'd')).format('YYYY-MM-DD')
+    // console.log(`endTime:${endTime}`)
+    // queryData.eTime = endTime;
 
 
     this.setState({
@@ -626,7 +632,7 @@ class articleManager extends Component {
   }
   // 搜索
   handleQuery () {
-    // 使用次数要成对出现
+
     const { query } = this.state;
 
     this.setState({
@@ -683,7 +689,7 @@ class articleManager extends Component {
         }
         this.setState({
           addForm,
-          addModal:true,
+          addModal: true,
           modalTitle: '编辑文章',
           modalType: 'edit',
         })

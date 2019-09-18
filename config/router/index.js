@@ -42,6 +42,13 @@ const router = [
             icon: 'apartment',
             component: './columns',
           },
+          // 文章管理
+          {
+            path: '/article',
+            name: 'Article',
+            icon: 'container',
+            component: './article',
+          },
           {
             component: './404',
           },

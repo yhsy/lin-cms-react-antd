@@ -51,5 +51,6 @@ export default {
   'menu.changePassword': '修改密码',
   'menu.Banner': 'Banner管理',
   'menu.Columns': '栏目管理',
+  'menu.Article': '文章管理',
 
 };
