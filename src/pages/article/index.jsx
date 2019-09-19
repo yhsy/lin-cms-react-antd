@@ -51,6 +51,11 @@ import moment from 'moment';
 
 // import styles from './index.less';
 
+// 引入编辑器组件
+import BraftEditor from 'braft-editor'
+// 引入编辑器样式
+import 'braft-editor/dist/index.css'
+
 // 获取id和token
 import { getUid, getToken } from '@/utils/auth'
 
@@ -90,7 +95,9 @@ class articleManager extends Component {
       cover: '',
       url: '',
       description: '',
-      content: '',
+      // content: '',
+      content: BraftEditor.createEditorState('<p>Hello <b>World!</b></p>'),
+      // editorContent:  BraftEditor.createEditorState('<p>Hello <b>World!</b></p>'),
     },
     modalTitle: '',
     modalType: '',
@@ -108,7 +115,10 @@ class articleManager extends Component {
     // 图片上传loading
     upLoading: false,
     imageUrl: '',
-    upHeader: {}
+    upHeader: {},
+    // 编辑器设置
+    editorState: BraftEditor.createEditorState('<p>Hello <b>World!</b></p>'), // 设置编辑器初始内容
+    // outputHTML: '<p></p>'
   }
 
   // 页面载入之前(挂载)
@@ -138,9 +148,14 @@ class articleManager extends Component {
       addForm, addModal, modalTitle, modalType,
       id, editForm, editModal,
       upLoading, imageUrl, upHeader,
+      editorState, outputHTML,
     } = this.state
 
     const { getFieldDecorator } = this.props.form;
+
+    // 编辑器组件
+    // const controls = ['bold', 'italic', 'underline', 'text-color', 'separator', 'link', 'separator', 'media' ]
+
 
     // 功能操作菜单
     const menus = (record) => {
@@ -486,14 +501,35 @@ class articleManager extends Component {
                   />,
                 )}
               </FormItem>
+              {/*
+                <FormItem label="描述">
+                  {getFieldDecorator('description', {
+                    rules: [
+                      { max: 30, message: '描述最多30个字符' },
+                    ],
+                    initialValue: addForm.description ? addForm.description : ''
+                  })(
+                    <Input
+                      placeholder="请输入描述"
+                      onInput={e => {
+                        const { value } = e.target;
+                        const { addForm } = this.state;
+                        addForm.description = value;
+                        this.setState({ addForm });
+                      }}
+                    />,
+                  )}
+                </FormItem>
+              */}
               <FormItem label="描述">
                 {getFieldDecorator('description', {
                   rules: [
-                    { max: 30, message: '描述最多30个字符' },
+                    { max: 30, message: '内容最多30个字符' },
                   ],
                   initialValue: addForm.description ? addForm.description : ''
                 })(
-                  <Input
+                  <TextArea
+                    autosize={{ minRows: 3, maxRows: 20 }}
                     placeholder="请输入描述"
                     onInput={e => {
                       const { value } = e.target;
@@ -501,10 +537,10 @@ class articleManager extends Component {
                       addForm.description = value;
                       this.setState({ addForm });
                     }}
-                  />,
+                  />
                 )}
               </FormItem>
-              <FormItem label="内容">
+              {/* <FormItem label="内容">
                 {getFieldDecorator('content', {
                   rules: [
                     {
@@ -524,6 +560,40 @@ class articleManager extends Component {
                       addForm.content = value;
                       this.setState({ addForm });
                     }}
+                  />
+                )}
+              </FormItem> */}
+              <FormItem label="内容">
+                {getFieldDecorator('content', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '内容不能为空',
+                    },
+                    // { type: 'string', min: 20, message: '内容最少20个字符' },
+                    // { min: 20, message: '内容最少20个字符' },
+                  ],
+                  initialValue: addForm.content ? addForm.content : ''
+                })(
+                  <BraftEditor
+                    // value={editorState}
+                    className="my-editor"
+                    // controls={controls}
+                    placeholder="请输入正文内容"
+                    onChange={ (editorState)=>{
+                      const { addForm } = this.state;
+                      addForm.content = editorState.toHTML();
+                      // const htmlStr = editorState.toHTML();
+                      // console.log(typeof htmlStr);
+                      // console.log(htmlStr.length);
+                      // console.log(`editorState:${editorState}`);
+                      // console.log(`outputHTML:${editorState.toHTML()}`);
+                      this.setState({
+                        addForm,
+                        // editorState: editorState,
+                        // outputHTML: editorState.toHTML()
+                      })
+                    } }
                   />
                 )}
               </FormItem>
@@ -556,9 +626,6 @@ class articleManager extends Component {
       sTime,
       eTime,
     } = this.state.query
-
-    console.log(`title:${title}`)
-
 
     let payload = {
       page: Number(page) || 1,
