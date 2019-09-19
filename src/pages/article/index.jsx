@@ -1,3 +1,4 @@
+
 import React, { Component, Fragment } from 'react';
 /* umi全家桶-start */
 import Link from 'umi/link';
@@ -49,7 +50,7 @@ const { RangePicker } = DatePicker;
 // 日期插件
 import moment from 'moment';
 
-// import styles from './index.less';
+import styles from './index.less';
 
 // 引入编辑器组件
 import BraftEditor from 'braft-editor'
@@ -363,6 +364,7 @@ class articleManager extends Component {
           <Modal
             title={modalTitle}
             visible={addModal}
+            // width="1000px"
             onCancel={() => {
               this.setState({
                 addModal: false
@@ -577,7 +579,7 @@ class articleManager extends Component {
                 })(
                   <BraftEditor
                     // value={editorState}
-                    className="my-editor"
+                    className={styles.my_editor}
                     // controls={controls}
                     placeholder="请输入正文内容"
                     onChange={ (editorState)=>{
