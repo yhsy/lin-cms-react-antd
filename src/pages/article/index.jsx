@@ -342,11 +342,11 @@ class articleManager extends Component {
                   title="操作"
                   key="options"
                   render={(text, record) => (
-                    <Button type="link" style={{ padding: 0 }}>查看详情</Button>
+                    // <Button type="link" style={{ padding: 0 }}>查看详情</Button>
 
-                    // <Dropdown overlay={menus(record)} placement="bottomLeft">
-                    //   <Button type="primary" icon="setting"></Button>
-                    // </Dropdown>
+                    <Dropdown overlay={menus(record)} placement="bottomLeft">
+                      <Button type="primary" icon="setting"></Button>
+                    </Dropdown>
                   )}
                 />
               </Table>
@@ -582,7 +582,7 @@ class articleManager extends Component {
                     className={styles.my_editor}
                     // controls={controls}
                     placeholder="请输入正文内容"
-                    onChange={ (editorState)=>{
+                    onChange={(editorState) => {
                       const { addForm } = this.state;
                       addForm.content = editorState.toHTML();
                       // const htmlStr = editorState.toHTML();
@@ -595,7 +595,7 @@ class articleManager extends Component {
                         // editorState: editorState,
                         // outputHTML: editorState.toHTML()
                       })
-                    } }
+                    }}
                   />
                 )}
               </FormItem>
@@ -696,12 +696,26 @@ class articleManager extends Component {
         console.log('表单校验错误');
         return;
       }
-      const { id, type, cname, link, } = this.state.addForm;
+      const {
+        id,
+        cid,
+        title,
+        author,
+        cover,
+        url,
+        description,
+        content,
+      } = this.state.addForm;
+
       let payload = {
         id,
-        type,
-        cname,
-        link,
+        cid,
+        title,
+        author,
+        cover,
+        url,
+        description,
+        content,
       }
 
       const { dispatch } = this.props;
