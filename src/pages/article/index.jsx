@@ -824,7 +824,7 @@ class articleManager extends Component {
   // 操作功能
   changeMenu (record, item) {
     const { key } = item
-    const { id } = record
+    // const { id } = record
     // console.log(`id:${id}`)
 
     switch (key) {
@@ -858,15 +858,15 @@ class articleManager extends Component {
         break;
       // 删除文章
       case '3':
-        const bTitle = record.cname;
+        const bTitle = record.title;
 
         Modal.confirm({
           title: `删除文章?`,
-          content: `确认删除文章:${bTitle}吗?`,
+          content: `标题:${bTitle}吗?`,
           okText: '确认',
           cancelText: '取消',
           onOk: () => {
-            this.delArticle(id)
+            this.delArticle(record.id)
           },
         });
         break;
