@@ -575,7 +575,7 @@ class articleManager extends Component {
                     // { type: 'string', min: 20, message: '内容最少20个字符' },
                     // { min: 20, message: '内容最少20个字符' },
                   ],
-                  initialValue: addForm.content ? addForm.content : ''
+                  initialValue: addForm.content ? BraftEditor.createEditorState(addForm.content) : BraftEditor.createEditorState('')
                 })(
                   <BraftEditor
                     // value={editorState}
@@ -838,16 +838,24 @@ class articleManager extends Component {
       case '2':
         const {
           id,
-          type,
-          cname,
-          link,
+          cid,
+          title,
+          author,
+          cover,
+          url,
+          description,
+          content,
         } = record;
 
         const addForm = {
           id,
-          type,
-          cname,
-          link,
+          cid,
+          title,
+          author,
+          cover,
+          url,
+          description,
+          content,
         }
         this.setState({
           addForm,
