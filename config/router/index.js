@@ -49,6 +49,13 @@ const router = [
             icon: 'container',
             component: './article',
           },
+          // 招聘管理
+          {
+            path: '/jobs',
+            name: 'Jobs',
+            icon: 'usergroup-add',
+            component: './jobs',
+          },
           {
             component: './404',
           },

@@ -52,5 +52,5 @@ export default {
   'menu.Banner': 'Banner管理',
   'menu.Columns': '栏目管理',
   'menu.Article': '文章管理',
-
+  'menu.Jobs': '招聘管理',
 };
