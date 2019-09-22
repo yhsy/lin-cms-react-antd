@@ -5,6 +5,12 @@ export async function getJobsList (params) {
     params,
   });
 }
+// 获取栏目列表(栏目ID和名称)
+export async function getColumnsList (params) {
+  return request('/columns/list', {
+    params,
+  });
+}
 // 添加招聘信息
 export async function addJobs (data) {
   return request('/jobs/add', {

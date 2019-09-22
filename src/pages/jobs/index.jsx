@@ -66,11 +66,14 @@ import { getUid, getToken } from '@/utils/auth'
   list: jobsManager.list,
   total: jobsManager.total,
   loading: loading.effects['jobsManager/fetchJobsList'],
+  cList: jobsManager.cList,
+  cLoading: loading.effects['jobsManager/fetchColumnsList'],
 }))
 
 
 class jobsManager extends Component {
   state = {
+    ctype: 2,
     // 页码
     page: 1,
     // 条数
@@ -136,6 +139,8 @@ class jobsManager extends Component {
   componentDidMount () {
     // 获取列表
     this.getJobsList(1)
+    // 获取栏目列表
+    this.getColumnsList();
 
     // 设置header头
     const { upHeader } = this.state;
@@ -152,6 +157,8 @@ class jobsManager extends Component {
       list,
       total,
       loading,
+      cList,
+      cLoading,
     } = this.props;
 
     const {
@@ -248,9 +255,17 @@ class jobsManager extends Component {
                                 query
                               })
                             }}>
-                            <Option value={201}>研发部</Option>
-                            <Option value={202}>运营部</Option>
-                            <Option value={203}>产品部</Option>
+                            {
+                              cList.map((item, index) => {
+                                return <Option value={item.cid}>{item.cname}</Option>
+                              })
+                            }
+
+                            {/* 
+                              <Option value={201}>研发部</Option>
+                              <Option value={202}>运营部</Option>
+                              <Option value={203}>产品部</Option>
+                            */}
                           </Select>
                         </FormItem>
                         <FormItem label="职位名">
@@ -669,6 +684,22 @@ class jobsManager extends Component {
     const { dispatch } = this.props;
     dispatch({
       type: 'jobsManager/fetchJobsList',
+      payload,
+    });
+  }
+  // 获取栏目列表
+  getColumnsList () {
+    const {
+      ctype
+    } = this.state;
+
+    let payload = {
+      type: ctype,
+    }
+
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'jobsManager/fetchColumnsList',
       payload,
     });
   }

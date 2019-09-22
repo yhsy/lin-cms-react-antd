@@ -1,5 +1,6 @@
 import {
   getJobsList, addJobs, editJobs, delJobs,
+  getColumnsList,
 } from './service';
 
 const jobsModel = {
@@ -8,6 +9,7 @@ const jobsModel = {
     // 招聘信息列表
     list: [],
     total: 0,
+    cList: [],
   },
   effects: {
     // 获取招聘信息列表
@@ -15,6 +17,14 @@ const jobsModel = {
       const response = yield call(getJobsList, payload);
       yield put({
         type: 'queryJobsList',
+        payload: response || [],
+      });
+    },
+    // 获取栏目列表
+    *fetchColumnsList ({ payload }, { call, put }) {
+      const response = yield call(getColumnsList, payload);
+      yield put({
+        type: 'queryColumnsList',
         payload: response || [],
       });
     },
@@ -48,6 +58,14 @@ const jobsModel = {
         ...state,
         list,
         total,
+      };
+    },
+    // 获取栏目列表
+    queryColumnsList (state, action) {
+      const { data } = action.payload;
+      return {
+        ...state,
+        cList: data,
       };
     },
   },
