@@ -105,7 +105,7 @@ class jobsManager extends Component {
       id: '',
       cid: '',
       title: '',
-      author: '',
+      num: '',
       cover: '',
       url: '',
       description: '',
@@ -319,7 +319,7 @@ class jobsManager extends Component {
                         </FormItem>
                       </Form>
                     </Col>
-                    {/* <Col>
+                    <Col>
                       <Button type="primary" onClick={() => {
                         // 表单重置
                         this.props.form.resetFields();
@@ -327,7 +327,7 @@ class jobsManager extends Component {
                           id: '',
                           cid: '',
                           title: '',
-                          author: '',
+                          num: '',
                           url: '',
                           description: '',
                           cover: '',
@@ -340,7 +340,7 @@ class jobsManager extends Component {
                           modalType: 'add',
                         })
                       }} >添加招聘信息</Button>
-                    </Col> */}
+                    </Col>
                   </Row>
                 </div>
 
@@ -423,12 +423,12 @@ class jobsManager extends Component {
           >
             {/* <Spin spinning={upLoading}> */}
             <Form>
-              <FormItem label="所属栏目">
+              <FormItem label="所属部门">
                 {getFieldDecorator('cid', {
                   rules: [
                     {
                       required: true,
-                      message: '请选择栏目',
+                      message: '请选择部门',
                     },
                   ],
                   initialValue: addForm.cid ? addForm.cid : ''
@@ -440,24 +440,29 @@ class jobsManager extends Component {
                       addForm.cid = value;
                       this.setState({ addForm });
                     }}>
-                    <Option value={101}>公司新闻</Option>
-                    <Option value={102}>行业新闻</Option>
+                    {
+                      cList.map((item, index) => {
+                        return <Option key={item.cid} value={item.cid}>{item.cname}</Option>
+                      })
+                    }
+                    {/* <Option value={101}>公司新闻</Option> */}
+                    {/* <Option value={102}>行业新闻</Option> */}
                   </Select>
                 )}
               </FormItem>
-              <FormItem label="标题">
+              <FormItem label="职位名称">
                 {getFieldDecorator('title', {
                   rules: [
                     {
                       required: true,
-                      message: '标题不能为空',
+                      message: '职位名称不能为空',
                     },
-                    { min: 2, max: 30, message: '标题为2-30个字符' },
+                    { min: 2, max: 30, message: '职位名称为2-30个字符' },
                   ],
                   initialValue: addForm.title ? addForm.title : ''
                 })(
                   <Input
-                    placeholder="请输入标题"
+                    placeholder="请输入职位名称"
                     onInput={e => {
                       const { value } = e.target;
                       const { addForm } = this.state;
@@ -467,154 +472,34 @@ class jobsManager extends Component {
                   />,
                 )}
               </FormItem>
-              <FormItem label="作者">
-                {getFieldDecorator('author', {
+              <FormItem label="招聘人数">
+                {getFieldDecorator('num', {
                   rules: [
                     {
                       required: true,
-                      message: '作者不能为空',
+                      message: '招聘人数不能为空',
                     },
-                    { min: 2, max: 10, message: '作者为2-10个字符' },
                   ],
-                  initialValue: addForm.author ? addForm.author : ''
+                  initialValue: addForm.num ? addForm.num : ''
                 })(
                   <Input
-                    placeholder="请输入标题"
+                    placeholder="请输入招聘人数"
                     onInput={e => {
                       const { value } = e.target;
                       const { addForm } = this.state;
-                      addForm.author = value;
+                      addForm.num = value;
                       this.setState({ addForm });
                     }}
                   />,
                 )}
               </FormItem>
-              <FormItem label="封面图片">
-                {getFieldDecorator('cover', {
-                  rules: [
-                    {
-                      required: true,
-                      message: '封面图片不能为空',
-                    },
-                  ],
-                  initialValue: addForm.cover ? addForm.cover : ''
-                })(
-                  <Upload
-                    // name='file'
-                    name="avatar"
-                    listType="picture-card"
-                    style={{
-                      width: '472px',
-                      height: '172px'
-                    }}
-                    // className="avatar-uploader"
-                    showUploadList={false}
-                    // 请求头一定要带上(id和token)
-                    headers={upHeader}
-                    action="/api/upload/qiniu_img"
-                    beforeUpload={beforeUpload}
-                    onChange={this.UploadImgChange}
-                  >
-                    {this.state.addForm.cover ? <img src={this.state.addForm.cover} alt="avatar" style={{
-                      width: '472px',
-                      height: '172px'
-                    }} /> : uploadButton}
-                  </Upload>
-                )}
-              </FormItem>
-              <FormItem label="链接地址">
-                {getFieldDecorator('url', {
-                  rules: [
-                    {
-                      required: true,
-                      message: '链接不能为空',
-                    },
-                    { min: 1, max: 50, message: '链接地址为1-50个字符' },
-                  ],
-                  initialValue: addForm.url ? addForm.url : ''
-                })(
-                  <Input
-                    placeholder="请输入链接地址"
-                    onInput={e => {
-                      const { value } = e.target;
-                      const { addForm } = this.state;
-                      addForm.url = value;
-                      this.setState({ addForm });
-                    }}
-                  />,
-                )}
-              </FormItem>
-              {/*
-                <FormItem label="描述">
-                  {getFieldDecorator('description', {
-                    rules: [
-                      { max: 30, message: '描述最多30个字符' },
-                    ],
-                    initialValue: addForm.description ? addForm.description : ''
-                  })(
-                    <Input
-                      placeholder="请输入描述"
-                      onInput={e => {
-                        const { value } = e.target;
-                        const { addForm } = this.state;
-                        addForm.description = value;
-                        this.setState({ addForm });
-                      }}
-                    />,
-                  )}
-                </FormItem>
-              */}
-              <FormItem label="描述">
-                {getFieldDecorator('description', {
-                  rules: [
-                    { max: 30, message: '内容最多30个字符' },
-                  ],
-                  initialValue: addForm.description ? addForm.description : ''
-                })(
-                  <TextArea
-                    autosize={{ minRows: 3, maxRows: 20 }}
-                    placeholder="请输入描述"
-                    onInput={e => {
-                      const { value } = e.target;
-                      const { addForm } = this.state;
-                      addForm.description = value;
-                      this.setState({ addForm });
-                    }}
-                  />
-                )}
-              </FormItem>
-              {/* <FormItem label="内容">
+              <FormItem label="招聘要求">
                 {getFieldDecorator('content', {
                   rules: [
                     {
                       required: true,
                       message: '内容不能为空',
                     },
-                    { max: 100000, message: '内容最多10万个字' },
-                  ],
-                  initialValue: addForm.content ? addForm.content : ''
-                })(
-                  <TextArea
-                    autosize={{ minRows: 3, maxRows: 20 }}
-                    placeholder="请输入招聘内容"
-                    onInput={e => {
-                      const { value } = e.target;
-                      const { addForm } = this.state;
-                      addForm.content = value;
-                      this.setState({ addForm });
-                    }}
-                  />
-                )}
-              </FormItem> */}
-              <FormItem label="内容">
-                {getFieldDecorator('content', {
-                  rules: [
-                    {
-                      required: true,
-                      message: '内容不能为空',
-                    },
-                    // { type: 'string', min: 20, message: '内容最少20个字符' },
-                    // { min: 20, message: '内容最少20个字符' },
                   ],
                   initialValue: addForm.content ? BraftEditor.createEditorState(addForm.content) : BraftEditor.createEditorState('')
                 })(
@@ -622,19 +507,13 @@ class jobsManager extends Component {
                     // value={editorState}
                     className={styles.my_editor}
                     // controls={controls}
-                    placeholder="请输入正文内容"
+                    placeholder="请输入招聘要求"
                     onChange={(editorState) => {
                       const { addForm } = this.state;
                       addForm.content = editorState.toHTML();
-                      // const htmlStr = editorState.toHTML();
-                      // console.log(typeof htmlStr);
-                      // console.log(htmlStr.length);
-                      // console.log(`editorState:${editorState}`);
-                      // console.log(`outputHTML:${editorState.toHTML()}`);
+
                       this.setState({
                         addForm,
-                        // editorState: editorState,
-                        // outputHTML: editorState.toHTML()
                       })
                     }}
                   />
@@ -662,7 +541,7 @@ class jobsManager extends Component {
     const {
       cid,
       title,
-      author,
+      num,
       status,
       start_time,
       end_time,
@@ -675,7 +554,7 @@ class jobsManager extends Component {
       limit: Number(limit) || 10,
       cid,
       title,
-      author,
+      num,
       status,
       startTime: sTime || '',
       endTime: eTime || '',
@@ -714,10 +593,10 @@ class jobsManager extends Component {
       const {
         cid,
         title,
-        author,
-        cover,
-        url,
-        description,
+        num,
+        // cover,
+        // url,
+        // description,
         content,
       } = this.state.addForm;
 
@@ -725,10 +604,10 @@ class jobsManager extends Component {
       let payload = {
         cid,
         title,
-        author,
-        cover,
-        url,
-        description,
+        num: Number(num),
+        // cover,
+        // url,
+        // description,
         content,
       }
 
@@ -757,7 +636,7 @@ class jobsManager extends Component {
         id,
         cid,
         title,
-        author,
+        num,
         cover,
         url,
         description,
@@ -768,7 +647,7 @@ class jobsManager extends Component {
         id,
         cid,
         title,
-        author,
+        num,
         cover,
         url,
         description,
@@ -897,7 +776,7 @@ class jobsManager extends Component {
           id,
           cid,
           title,
-          author,
+          num,
           cover,
           url,
           description,
@@ -908,7 +787,7 @@ class jobsManager extends Component {
           id,
           cid,
           title,
-          author,
+          num,
           cover,
           url,
           description,
