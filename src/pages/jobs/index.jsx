@@ -98,7 +98,7 @@ class jobsManager extends Component {
     },
     jobsStatus: {
       0: '已结束',
-      1: '进行中',
+      1: '招聘中',
     },
     addModal: false,
     addForm: {
@@ -106,9 +106,9 @@ class jobsManager extends Component {
       cid: '',
       title: '',
       num: '',
-      cover: '',
-      url: '',
-      description: '',
+      // cover: '',
+      // url: '',
+      // description: '',
       // content: '',
       content: BraftEditor.createEditorState('<p>Hello <b>World!</b></p>'),
       // editorContent:  BraftEditor.createEditorState('<p>Hello <b>World!</b></p>'),
@@ -183,14 +183,14 @@ class jobsManager extends Component {
             {
               record.status === 0 && (
                 <a>
-                  显示
+                  招聘中
                 </a>
               )
             }
             {
               record.status === 1 && (
                 <a>
-                  隐藏
+                  已结束
                 </a>
               )
             }
@@ -293,7 +293,7 @@ class jobsManager extends Component {
                                 query
                               })
                             }}>
-                            <Option value={1}>进行中</Option>
+                            <Option value={1}>招聘中</Option>
                             <Option value={0}>已结束</Option>
                           </Select>
                         </FormItem>
@@ -383,11 +383,11 @@ class jobsManager extends Component {
                   title="操作"
                   key="options"
                   render={(text, record) => (
-                    <Button type="link" style={{ padding: 0 }}>查看详情</Button>
+                    // <Button type="link" style={{ padding: 0 }}>查看详情</Button>
 
-                    // <Dropdown overlay={menus(record)} placement="bottomLeft">
-                    //   <Button type="primary" icon="setting"></Button>
-                    // </Dropdown>
+                    <Dropdown overlay={menus(record)} placement="bottomLeft">
+                      <Button type="primary" icon="setting"></Button>
+                    </Dropdown>
                   )}
                 />
               </Table>
