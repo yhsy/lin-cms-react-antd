@@ -257,7 +257,7 @@ class jobsManager extends Component {
                             }}>
                             {
                               cList.map((item, index) => {
-                                return <Option value={item.cid}>{item.cname}</Option>
+                                return <Option key={item.cid} value={item.cid}>{item.cname}</Option>
                               })
                             }
 
