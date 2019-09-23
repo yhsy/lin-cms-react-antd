@@ -100,8 +100,8 @@ class joinManager extends Component {
     },
     joinStatus: {
       0: '未查看',
-      1: '沟通中',
-      2: '已处理',
+      1: '已查看',
+      2: '已回复',
     },
     addModal: false,
     addForm: {
@@ -186,14 +186,14 @@ class joinManager extends Component {
             {
               record.status === 0 && (
                 <a>
-                  加盟中
+                  已查看
                 </a>
               )
             }
             {
               record.status === 1 && (
                 <a>
-                  已结束
+                  已回复
                 </a>
               )
             }
@@ -280,47 +280,49 @@ class joinManager extends Component {
                             }}
                             placeholder="请输入ID" />
                         </FormItem> */}
-                        <FormItem label="名称">
-                          <Input
-                            value={query.name}
-                            onChange={(e) => {
-                              const { query } = this.state;
-                              const { value } = e.target;
-                              query.name = value;
-                              this.setState({
-                                query
-                              })
-                            }}
-                            placeholder="请输入名称" />
-                        </FormItem>
-                        <FormItem label="手机">
-                          <Input
-                            value={query.phone}
-                            onChange={(e) => {
-                              const { query } = this.state;
-                              const { value } = e.target;
-                              query.phone = value;
-                              this.setState({
-                                query
-                              })
-                            }}
-                            placeholder="请输入手机号" />
-                        </FormItem>
-                        <FormItem label="状态" style={{ marginBottom: '20px' }}>
-                          <Select
-                            value={query.status}
-                            style={{ width: 80 }}
-                            onChange={(value) => {
-                              const { query } = this.state;
-                              query.status = value
-                              this.setState({
-                                query
-                              })
-                            }}>
-                            <Option value={1}>加盟中</Option>
-                            <Option value={0}>已结束</Option>
-                          </Select>
-                        </FormItem>
+                        <div style={{ marginBottom: '20px' }}>
+                          <FormItem label="名称">
+                            <Input
+                              value={query.name}
+                              onChange={(e) => {
+                                const { query } = this.state;
+                                const { value } = e.target;
+                                query.name = value;
+                                this.setState({
+                                  query
+                                })
+                              }}
+                              placeholder="请输入名称" />
+                          </FormItem>
+                          <FormItem label="手机">
+                            <Input
+                              value={query.phone}
+                              onChange={(e) => {
+                                const { query } = this.state;
+                                const { value } = e.target;
+                                query.phone = value;
+                                this.setState({
+                                  query
+                                })
+                              }}
+                              placeholder="请输入手机号" />
+                          </FormItem>
+                          <FormItem label="状态" style={{ marginBottom: '20px' }}>
+                            <Select
+                              value={query.status}
+                              style={{ width: 80 }}
+                              onChange={(value) => {
+                                const { query } = this.state;
+                                query.status = value
+                                this.setState({
+                                  query
+                                })
+                              }}>
+                              <Option value={1}>加盟中</Option>
+                              <Option value={0}>已结束</Option>
+                            </Select>
+                          </FormItem>
+                        </div>
 
                         <FormItem label="创建时间">
                           <RangePicker
@@ -335,6 +337,7 @@ class joinManager extends Component {
                         </FormItem>
 
 
+
                         <FormItem>
                           <Button type="primary" onClick={this.handleQuery.bind(this)} size="large">搜索</Button>
                         </FormItem>
@@ -344,7 +347,7 @@ class joinManager extends Component {
                       </Form>
                     </Col>
                     {/* <Col>
-                      <Button type="primary" onClick={() => {
+                      <Button type="primary" size="large" onClick={() => {
                         // 表单重置
                         this.props.form.resetFields();
                         const addForm = {
@@ -403,11 +406,11 @@ class joinManager extends Component {
                   title="操作"
                   key="options"
                   render={(text, record) => (
-                    <Button type="link" style={{ padding: 0 }}>查看详情</Button>
+                    // <Button type="link" style={{ padding: 0 }}>查看详情</Button>
 
-                    // <Dropdown overlay={menus(record)} placement="bottomLeft">
-                    //   <Button type="primary" icon="setting"></Button>
-                    // </Dropdown>
+                    <Dropdown overlay={menus(record)} placement="bottomLeft">
+                      <Button type="primary" icon="setting"></Button>
+                    </Dropdown>
                   )}
                 />
               </Table>
@@ -789,7 +792,7 @@ class joinManager extends Component {
       // 显示隐藏
       case '1':
         const isShow = record.status;
-        const showStatus = isShow ? 0 : 1;
+        const showStatus = isShow ? 2 : 1;
         this.editJoinShow(record.id, showStatus);
         break;
       // 修改加盟
