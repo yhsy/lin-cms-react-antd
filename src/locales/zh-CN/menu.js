@@ -1,3 +1,10 @@
+/*
+ * @Description: In User Settings Edit
+ * @Author: your name
+ * @Date: 2019-09-23 08:35:48
+ * @LastEditTime: 2019-09-23 08:35:48
+ * @LastEditors: your name
+ */
 export default {
   'menu.welcome': '欢迎',
   'menu.more-blocks': '更多区块',
@@ -53,4 +60,5 @@ export default {
   'menu.Columns': '栏目管理',
   'menu.Article': '文章管理',
   'menu.Jobs': '招聘管理',
+  'menu.Join': '加盟管理',
 };

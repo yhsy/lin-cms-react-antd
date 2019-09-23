@@ -1,3 +1,10 @@
+/*
+ * @Description: In User Settings Edit
+ * @Author: your name
+ * @Date: 2019-09-23 08:35:48
+ * @LastEditTime: 2019-09-23 08:35:48
+ * @LastEditors: your name
+ */
 const router = [
   {
     path: '/user',
@@ -55,6 +62,13 @@ const router = [
             name: 'Jobs',
             icon: 'usergroup-add',
             component: './jobs',
+          },
+          // 加盟管理
+          {
+            path: '/join',
+            name: 'Join',
+            icon: 'gold',
+            component: './join',
           },
           {
             component: './404',
