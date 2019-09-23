@@ -244,59 +244,61 @@ class jobsManager extends Component {
                   <Row gutter={16} type="flex" justify="space-between">
                     <Col>
                       <Form layout="inline">
-                        <FormItem label="部门" style={{ marginBottom: '20px' }}>
-                          <Select
-                            value={query.cid}
-                            style={{ width: 80 }}
-                            onChange={(value) => {
-                              const { query } = this.state;
-                              query.cid = value
-                              this.setState({
-                                query
-                              })
-                            }}>
-                            {
-                              cList.map((item, index) => {
-                                return <Option key={item.cid} value={item.cid}>{item.cname}</Option>
-                              })
-                            }
+                        <div style={{ marginBottom: '20px' }}>
+                          <FormItem label="部门" style={{ marginBottom: '20px' }}>
+                            <Select
+                              value={query.cid}
+                              style={{ width: 80 }}
+                              onChange={(value) => {
+                                const { query } = this.state;
+                                query.cid = value
+                                this.setState({
+                                  query
+                                })
+                              }}>
+                              {
+                                cList.map((item, index) => {
+                                  return <Option key={item.cid} value={item.cid}>{item.cname}</Option>
+                                })
+                              }
 
-                            {/* 
-                              <Option value={201}>研发部</Option>
-                              <Option value={202}>运营部</Option>
-                              <Option value={203}>产品部</Option>
-                            */}
-                          </Select>
-                        </FormItem>
-                        <FormItem label="职位名">
-                          <Input
-                            value={query.title}
-                            onChange={(e) => {
-                              const { query } = this.state;
-                              const { value } = e.target;
-                              query.title = value;
-                              this.setState({
-                                query
-                              })
-                            }}
-                            placeholder="请输入标题" />
-                        </FormItem>
+                              {/* 
+                                <Option value={201}>研发部</Option>
+                                <Option value={202}>运营部</Option>
+                                <Option value={203}>产品部</Option>
+                              */}
+                            </Select>
+                          </FormItem>
+                          <FormItem label="职位名">
+                            <Input
+                              value={query.title}
+                              onChange={(e) => {
+                                const { query } = this.state;
+                                const { value } = e.target;
+                                query.title = value;
+                                this.setState({
+                                  query
+                                })
+                              }}
+                              placeholder="请输入标题" />
+                          </FormItem>
 
-                        <FormItem label="状态" style={{ marginBottom: '20px' }}>
-                          <Select
-                            value={query.status}
-                            style={{ width: 80 }}
-                            onChange={(value) => {
-                              const { query } = this.state;
-                              query.status = value
-                              this.setState({
-                                query
-                              })
-                            }}>
-                            <Option value={1}>招聘中</Option>
-                            <Option value={0}>已结束</Option>
-                          </Select>
-                        </FormItem>
+                          <FormItem label="状态" style={{ marginBottom: '20px' }}>
+                            <Select
+                              value={query.status}
+                              style={{ width: 80 }}
+                              onChange={(value) => {
+                                const { query } = this.state;
+                                query.status = value
+                                this.setState({
+                                  query
+                                })
+                              }}>
+                              <Option value={1}>招聘中</Option>
+                              <Option value={0}>已结束</Option>
+                            </Select>
+                          </FormItem>
+                        </div>
 
                         <FormItem label="创建时间">
                           <RangePicker
@@ -320,7 +322,7 @@ class jobsManager extends Component {
                       </Form>
                     </Col>
                     <Col>
-                      <Button type="primary" onClick={() => {
+                      <Button type="primary" size="large" onClick={() => {
                         // 表单重置
                         this.props.form.resetFields();
                         const addForm = {
