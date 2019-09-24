@@ -384,7 +384,8 @@ class joinManager extends Component {
                 <Column title="名称" dataIndex="name" />
                 <Column title="手机" dataIndex="phone" />
                 <Column title="地址" dataIndex="address" />
-                <Column title="内容" dataIndex="note" />
+
+                <Column title="留言内容" dataIndex="note" />
 
                 <Column title="状态" dataIndex="status" render={(text, record) => (
                   <span>
@@ -401,6 +402,7 @@ class joinManager extends Component {
                     {moment(text).format('YYYY-MM-DD')}
                   </span>
                 )} />
+                <Column title="备注" dataIndex="desc" />
 
                 <Column
                   title="操作"
@@ -827,11 +829,11 @@ class joinManager extends Component {
         break;
       // 删除加盟
       case '3':
-        const bTitle = record.title;
+        const bTitle = record.name;
 
         Modal.confirm({
           title: `删除加盟?`,
-          content: `标题:${bTitle}吗?`,
+          content: `客户名:${bTitle}吗?`,
           okText: '确认',
           cancelText: '取消',
           onOk: () => {
