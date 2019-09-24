@@ -319,13 +319,14 @@ class joinManager extends Component {
                                   query
                                 })
                               }}>
-                              <Option value={1}>加盟中</Option>
-                              <Option value={0}>已结束</Option>
+                              <Option value={0}>未查看</Option>
+                              <Option value={1}>已查看</Option>
+                              <Option value={2}>已回复</Option>
                             </Select>
                           </FormItem>
                         </div>
 
-                        <FormItem label="创建时间">
+                        <FormItem label="留言时间">
                           <RangePicker
                             format="YYYY-MM-DD"
                             value={[query.start_time, query.end_time]}
