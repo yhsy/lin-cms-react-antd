@@ -113,6 +113,7 @@ class joinManager extends Component {
       // url: '',
       // description: '',
       // content: '',
+      desc: BraftEditor.createEditorState(''),
       content: BraftEditor.createEditorState('<p>Hello <b>World!</b></p>'),
       // editorContent:  BraftEditor.createEditorState('<p>Hello <b>World!</b></p>'),
     },
@@ -200,7 +201,7 @@ class joinManager extends Component {
           </Menu.Item>
           <Menu.Item key="2">
             <a>
-              编辑
+              修改备注
             </a>
           </Menu.Item>
           <Menu.Item key="3">
@@ -402,8 +403,11 @@ class joinManager extends Component {
                     {moment(text).format('YYYY-MM-DD')}
                   </span>
                 )} />
-                <Column title="备注" dataIndex="desc" />
-
+                <Column title="备注" dataIndex="desc" render={(text, record) => (
+                  <span dangerouslySetInnerHTML={{ __html: text }}>
+                    {/* {moment(text).format('YYYY-MM-DD')} */}
+                  </span>
+                )} />
                 <Column
                   title="操作"
                   key="options"
@@ -475,58 +479,86 @@ class joinManager extends Component {
                   )}
                 </FormItem>
               */}
-              <FormItem label="职位名称">
-                {getFieldDecorator('title', {
+              {/* 
+                <FormItem label="职位名称">
+                  {getFieldDecorator('title', {
+                    rules: [
+                      {
+                        required: true,
+                        message: '职位名称不能为空',
+                      },
+                      { min: 2, max: 30, message: '职位名称为2-30个字符' },
+                    ],
+                    initialValue: addForm.title ? addForm.title : ''
+                  })(
+                    <Input
+                      placeholder="请输入职位名称"
+                      onInput={e => {
+                        const { value } = e.target;
+                        const { addForm } = this.state;
+                        addForm.title = value;
+                        this.setState({ addForm });
+                      }}
+                    />,
+                  )}
+                </FormItem>
+                <FormItem label="加盟人数">
+                  {getFieldDecorator('num', {
+                    rules: [
+                      {
+                        required: true,
+                        message: '加盟人数不能为空',
+                      },
+                    ],
+                    initialValue: addForm.num ? addForm.num : ''
+                  })(
+                    <Input
+                      placeholder="请输入加盟人数"
+                      onInput={e => {
+                        const { value } = e.target;
+                        const { addForm } = this.state;
+                        addForm.num = value;
+                        this.setState({ addForm });
+                      }}
+                    />,
+                  )}
+                </FormItem>
+                <FormItem label="加盟要求">
+                  {getFieldDecorator('content', {
+                    rules: [
+                      {
+                        required: true,
+                        message: '内容不能为空',
+                      },
+                    ],
+                    initialValue: addForm.content ? BraftEditor.createEditorState(addForm.content) : BraftEditor.createEditorState('')
+                  })(
+                    <BraftEditor
+                      // value={editorState}
+                      className={styles.my_editor}
+                      // controls={controls}
+                      placeholder="请输入加盟要求"
+                      onChange={(editorState) => {
+                        const { addForm } = this.state;
+                        addForm.content = editorState.toHTML();
+
+                        this.setState({
+                          addForm,
+                        })
+                      }}
+                    />
+                  )}
+                </FormItem> 
+              */}
+              <FormItem label="备注信息">
+                {getFieldDecorator('desc', {
                   rules: [
                     {
                       required: true,
-                      message: '职位名称不能为空',
-                    },
-                    { min: 2, max: 30, message: '职位名称为2-30个字符' },
-                  ],
-                  initialValue: addForm.title ? addForm.title : ''
-                })(
-                  <Input
-                    placeholder="请输入职位名称"
-                    onInput={e => {
-                      const { value } = e.target;
-                      const { addForm } = this.state;
-                      addForm.title = value;
-                      this.setState({ addForm });
-                    }}
-                  />,
-                )}
-              </FormItem>
-              <FormItem label="加盟人数">
-                {getFieldDecorator('num', {
-                  rules: [
-                    {
-                      required: true,
-                      message: '加盟人数不能为空',
+                      message: '备注信息不能为空',
                     },
                   ],
-                  initialValue: addForm.num ? addForm.num : ''
-                })(
-                  <Input
-                    placeholder="请输入加盟人数"
-                    onInput={e => {
-                      const { value } = e.target;
-                      const { addForm } = this.state;
-                      addForm.num = value;
-                      this.setState({ addForm });
-                    }}
-                  />,
-                )}
-              </FormItem>
-              <FormItem label="加盟要求">
-                {getFieldDecorator('content', {
-                  rules: [
-                    {
-                      required: true,
-                      message: '内容不能为空',
-                    },
-                  ],
-                  initialValue: addForm.content ? BraftEditor.createEditorState(addForm.content) : BraftEditor.createEditorState('')
+                  initialValue: addForm.desc ? BraftEditor.createEditorState(addForm.desc) : BraftEditor.createEditorState('')
                 })(
                   <BraftEditor
                     // value={editorState}
@@ -535,7 +567,7 @@ class joinManager extends Component {
                     placeholder="请输入加盟要求"
                     onChange={(editorState) => {
                       const { addForm } = this.state;
-                      addForm.content = editorState.toHTML();
+                      addForm.desc = editorState.toHTML();
 
                       this.setState({
                         addForm,
@@ -661,24 +693,24 @@ class joinManager extends Component {
       }
       const {
         id,
-        cid,
-        title,
-        num,
-        cover,
-        url,
-        description,
-        content,
+        // cid,
+        // title,
+        // num,
+        // cover,
+        // url,
+        desc,
+        // content,
       } = this.state.addForm;
 
       let payload = {
         id,
-        cid,
-        title,
-        num,
-        cover,
-        url,
-        description,
-        content,
+        // cid,
+        // title,
+        // num,
+        // cover,
+        // url,
+        desc,
+        // content,
       }
 
       const { dispatch } = this.props;
@@ -801,29 +833,29 @@ class joinManager extends Component {
       case '2':
         const {
           id,
-          cid,
-          title,
-          num,
-          cover,
-          url,
-          description,
-          content,
+          // cid,
+          // title,
+          // num,
+          // cover,
+          // url,
+          desc,
+          // content,
         } = record;
 
         const addForm = {
           id,
-          cid,
-          title,
-          num,
-          cover,
-          url,
-          description,
-          content,
+          // cid,
+          // title,
+          // num,
+          // cover,
+          // url,
+          desc,
+          // content,
         }
         this.setState({
           addForm,
           addModal: true,
-          modalTitle: '编辑加盟',
+          modalTitle: '修改备注',
           modalType: 'edit',
         })
         break;
