@@ -2,8 +2,8 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-09-23 08:35:48
- * @LastEditTime: 2019-09-23 08:35:48
- * @LastEditors: your name
+ * @LastEditTime: 2019-09-25 19:05:45
+ * @LastEditors: Please set LastEditors
  */
 const router = [
   {
@@ -69,6 +69,21 @@ const router = [
             name: 'Join',
             icon: 'gold',
             component: './join',
+          },
+          // 系统管理
+          {
+            path: '/system',
+            name: 'System',
+            icon: 'laptop',
+            routes: [
+              // 管理员
+              {
+                path: '/system/admin',
+                name: 'sysAdmin',
+                icon: 'team',
+                component: './system/admin',
+              }
+            ]
           },
           {
             component: './404',

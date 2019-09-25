@@ -61,4 +61,7 @@ export default {
   'menu.Article': '文章管理',
   'menu.Jobs': '招聘管理',
   'menu.Join': '加盟管理',
+  'menu.System': '系统管理',
+  'menu.System.sysAdmin': '管理员',
+
 };
