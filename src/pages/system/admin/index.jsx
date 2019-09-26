@@ -119,7 +119,7 @@ class adminManager extends Component {
           <div>
             <Card>
               {/* 头部区域 */}
-              {/* <div className="g-hd">
+              <div className="g-hd">
                 <div className="search" style={{margin: '30px 10px'}}>
                   <Form layout="inline">
                     <Row gutter={16} type="flex" justify="space-between">
@@ -160,12 +160,12 @@ class adminManager extends Component {
                   </Form>
                 </div>
 
-              </div> */}
+              </div>
 
               {/* 表格 */}
               <Table dataSource={adminList} rowKey="id" pagination={false} loading={loading}>
-                <Column title="管理员ID" dataIndex="id" />
-                <Column title="管理员名称" dataIndex="nickname" />
+                <Column title="ID" dataIndex="id" />
+                <Column title="用户名" dataIndex="nickname" />
                 <Column title="头像" dataIndex="avatar" render={(text, record) => (
                   <img src={text} style={{width: '30px', height: '30px'}} />
                 )} />
