@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 
 import { connect } from 'dva';
 import moment from 'moment';
+import Md5 from 'md5';
 
 import {
   Card,
@@ -63,6 +64,7 @@ class adminManager extends Component {
     addForm: {
       username: '',
       password: '',
+      group_id: '',
     },
     auid:'',
     editForm: {
@@ -187,7 +189,7 @@ class adminManager extends Component {
                           <Button onClick={this.handleQueryReset.bind(this)} size="large">重置</Button>
                         </FormItem>
                       </Col>
-                      {/* <Col>
+                      <Col>
                         <Button size="large" type="primary" onClick={()=>{
                           // 表单重置
                           this.props.form.setFieldsValue({
@@ -199,7 +201,7 @@ class adminManager extends Component {
                             addModal: true
                           })
                         }}>添加管理员</Button>
-                      </Col> */}
+                      </Col>
                     </Row>
                   </Form>
                 </div>
@@ -267,6 +269,29 @@ class adminManager extends Component {
             visible={addModal}
             >
             <Form labelCol={{span:4}} wrapperCol={{span: 18}}>
+              <FormItem label="角色">
+                {getFieldDecorator('cid', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请选择角色',
+                    },
+                  ],
+                  initialValue: addForm.group_id ? addForm.group_id : ''
+                })(
+                  <Select
+                    style={{ width: 130 }}
+                    onChange={(value) => {
+                      const { addForm } = this.state;
+                      addForm.group_id = value;
+                      this.setState({ addForm });
+                    }}>
+                    <Option value={2}>管理员</Option>
+                    <Option value={3}>运营</Option>
+                    <Option value={4}>客服</Option>
+                  </Select>
+                )}
+              </FormItem>
               <FormItem label="用户名" >
                 {getFieldDecorator('username', {
                   rules: [
@@ -412,11 +437,12 @@ class adminManager extends Component {
         console.log('表单校验错误')
         return
       }
-      const { username, password } = this.state.addForm;
+      const { username, password,group_id } = this.state.addForm;
 
       const payload = {
         username,
-        password
+        password: Md5(password),
+        group_id,
       }
       // console.log(`data is ${JSON.stringify(payload)}`)
       dispatch({
