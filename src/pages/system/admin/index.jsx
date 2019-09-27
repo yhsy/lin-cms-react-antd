@@ -15,7 +15,7 @@ import {
   Select,
   Radio,
   Checkbox,
-  // DatePicker,
+  DatePicker,
   Menu,
   Dropdown,
   message,
@@ -27,7 +27,7 @@ const FormItem = Form.Item;
 const Password = Input.Password;
 const { Option } = Select;
 const { ColumnGroup, Column } = Table;
-// const { RangePicker } = DatePicker;
+const { RangePicker } = DatePicker;
 
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import styles from './index.less';
@@ -49,9 +49,16 @@ class adminManager extends Component {
     limit: 10,
     // 搜索条件
     query: {
+      id: '',
       // 状态(1-正常,2-冻结)
       status: '',
+      // 用户名
+      nickname: '',
+      start_time: null,
+      end_time: null,
     },
+    sTime: '',
+    eTime: '',
     addModal: false,
     addForm: {
       username: '',
@@ -124,6 +131,32 @@ class adminManager extends Component {
                   <Form layout="inline">
                     <Row gutter={16} type="flex" justify="space-between">
                       <Col>
+                        <FormItem label="ID">
+                            <Input
+                              value={query.id}
+                              onChange={(e) => {
+                                const { query } = this.state;
+                                const { value } = e.target;
+                                query.id = value;
+                                this.setState({
+                                  query
+                                })
+                              }}
+                              placeholder="请输入用户ID" />
+                        </FormItem>
+                        <FormItem label="用户名">
+                            <Input
+                              value={query.nickname}
+                              onChange={(e) => {
+                                const { query } = this.state;
+                                const { value } = e.target;
+                                query.nickname = value;
+                                this.setState({
+                                  query
+                                })
+                              }}
+                              placeholder="请输入用户名" />
+                        </FormItem>
                         <FormItem label="管理员状态">
                           <Select value={query.status} style={{ width: 90 }} onChange={(val)=>{
                               const { query } = this.state;
@@ -136,6 +169,17 @@ class adminManager extends Component {
                             <Option value={0}>冻结</Option>
                           </Select>
                         </FormItem>
+                        <FormItem label="创建时间">
+                          <RangePicker
+                            format="YYYY-MM-DD"
+                            value={[query.start_time, query.end_time]}
+                            ranges={{
+                              '今天': [moment(), moment()],
+                              '最近一个月': [moment().startOf('month'), moment().endOf('month')],
+                            }}
+                            onChange={this.changeDate.bind(this)}
+                          />
+                        </FormItem>
                         <FormItem>
                           <Button type="primary" onClick={this.handleQuery.bind(this)} size="large">搜索</Button>
                         </FormItem>
@@ -143,7 +187,7 @@ class adminManager extends Component {
                           <Button onClick={this.handleQueryReset.bind(this)} size="large">重置</Button>
                         </FormItem>
                       </Col>
-                      <Col>
+                      {/* <Col>
                         <Button size="large" type="primary" onClick={()=>{
                           // 表单重置
                           this.props.form.setFieldsValue({
@@ -155,7 +199,7 @@ class adminManager extends Component {
                             addModal: true
                           })
                         }}>添加管理员</Button>
-                      </Col>
+                      </Col> */}
                     </Row>
                   </Form>
                 </div>
@@ -175,12 +219,12 @@ class adminManager extends Component {
                   </span>
                 )}/>
 
-                <Column title="创建时间" dataIndex="created_time" render={(text, record) => (
+                <Column title="创建时间" dataIndex="create_time" render={(text, record) => (
                   <span>
                     {moment(text).format('YYYY-MM-DD HH:mm')}
                   </span>
                 )}/>
-                <Column title="更新时间" dataIndex="updated_time" render={(text, record) => (
+                <Column title="更新时间" dataIndex="update_time" render={(text, record) => (
                   <span>
                     {moment(text).format('YYYY-MM-DD HH:mm')}
                   </span>
@@ -333,21 +377,31 @@ class adminManager extends Component {
   getAdminList(page){
     // const {gid,create_time,end_time,page,name,model}
     const { dispatch } = this.props;
-    const { limit } = this.state;
+    const { limit,sTime,eTime, } = this.state;
     const {
       // role,
-      status
+      id,
+      status,
+      nickname,
     } = this.state.query
+
+    const payload = {
+      page: Number(page) || 1,
+      limit,
+      id,
+      active: status,
+      nickname,
+    }
+
+    if(sTime && eTime) {
+      payload.startTime = sTime;
+      payload.endTime = eTime;
+    }
+
     // 获取游戏列表
     dispatch({
       type: 'adminManager/fetchAdminList',
-      payload: {
-        page: Number(page) || 1,
-        // limit: Number(limit) || 10,
-        // perPage: limit,
-        // role,
-        // status,
-      },
+      payload,
     });
   }
   // 添加管理员
@@ -454,6 +508,32 @@ class adminManager extends Component {
     this.getAdminList(page)
   }
 
+  // 选择开始时间
+  changeDate (dates, dateString) {
+    // 对象拷贝
+    const queryData = JSON.parse(JSON.stringify(this.state.query))
+    // console.log(JSON.stringify(dates))
+    // console.log(dateString[0])
+    queryData.start_time = dates[0];
+    queryData.end_time = dates[1];
+    const sTime = dateString[0];
+    const eTime = dateString[1]
+    // const eTime = moment(dates[1].add(1, 'd')).format('YYYY-MM-DD')
+
+    // const sTime = moment((dateString[0])*1000).format('YYYY-MM-DD')
+
+    // const eTime = moment((dateString[1] + 86400)*1000).format('YYYY-MM-DD');
+    // const endTime = moment(dates[1].add(1, 'd')).format('YYYY-MM-DD')
+    // console.log(`endTime:${endTime}`)
+    // queryData.eTime = endTime;
+
+    this.setState({
+      query: queryData,
+      sTime,
+      eTime,
+    })
+  }
+
   // 搜索
   handleQuery(){
     this.setState({
@@ -465,11 +545,17 @@ class adminManager extends Component {
   handleQueryReset(){
     // 复位数据
     const queryData = {
-      status: ''
+      status: '',
+      id: '',
+      nickname: '',
+      start_time: null,
+      end_time: null,
     }
     this.setState({
       page: 1,
-      query: queryData
+      query: queryData,
+      sTime: '',
+      eTime: '',
     }, () => {
       this.handleQuery()
     })
@@ -525,6 +611,8 @@ class adminManager extends Component {
         break;
     }
   }
+
+
 
 }
 
