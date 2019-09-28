@@ -10,6 +10,11 @@ import {
   // getColumnsList,
 } from './service';
 
+import { changePassword } from '@/services/admin';
+
+import Md5 from 'md5'
+
+
 const adminModel = {
   namespace: 'adminManager',
   state: {
@@ -42,6 +47,18 @@ const adminModel = {
         callback(response)
       }
     },
+    // 管理员修改其他角色账号的密码
+    *editPassword ({ payload, callback }, { call }) {
+      const { id, password } = payload;
+      const req = {
+        id: Number(id),
+        password: Md5(password),
+      }
+      const response = yield call(changePassword, req);
+      if (response.code === 0) {
+        callback(response)
+      }
+    },
     // 编辑管理员
     *editAdmin ({ payload, callback }, { call }) {
       const response = yield call(editAdmin, payload);
@@ -49,6 +66,7 @@ const adminModel = {
         callback(response)
       }
     },
+
     // 删除管理员
     *delAdmin ({ payload, callback }, { call }) {
       const response = yield call(delAdmin, payload);
