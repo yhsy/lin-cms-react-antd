@@ -43,7 +43,7 @@ import styles from './index.less';
 class adminManager extends Component {
   state = {
     // 管理员状态
-    adminStatus: ['冻结','正常'],
+    adminStatus: ['冻结', '正常'],
     // 页码
     page: 1,
     // 条数
@@ -66,12 +66,12 @@ class adminManager extends Component {
       password: '',
       group_id: '',
     },
-    auid:'',
+    id: '',
     editForm: {
       password: '',
       status: '',
     },
-    editPasswordModal:false,
+    editPasswordModal: false,
     eidtStatusModal: false,
     editModal: false,
     editModalTitle: '',
@@ -79,12 +79,12 @@ class adminManager extends Component {
   }
 
   // 页面载入之前(挂载)
-  componentDidMount() {
+  componentDidMount () {
     // 获取管理员列表
     this.getAdminList(1)
   }
 
-  render() {
+  render () {
     const {
       adminList,
       total,
@@ -92,9 +92,9 @@ class adminManager extends Component {
     } = this.props;
 
     const {
-      adminStatus,page,limit,query,
-      addModal,addForm,
-      auid,editForm,editModal,editModalTitle,editModalType
+      adminStatus, page, limit, query,
+      addModal, addForm,
+      auid, editForm, editModal, editModalTitle, editModalType
     } = this.state
 
     const { getFieldDecorator } = this.props.form;
@@ -103,21 +103,21 @@ class adminManager extends Component {
     const menus = (record) => {
       return (
         <Menu onClick={this.changeMenu.bind(this, record)}>
-          <Menu.Item  key="1">
+          <Menu.Item key="1">
             <a>
               修改密码
             </a>
           </Menu.Item>
-          <Menu.Item  key="2">
+          {/* <Menu.Item key="2">
             <a>
               修改状态
             </a>
           </Menu.Item>
-          <Menu.Item  key="3">
+          <Menu.Item key="3">
             <a>
               删除管理员
             </a>
-          </Menu.Item>
+          </Menu.Item> */}
         </Menu>
       );
     }
@@ -129,43 +129,43 @@ class adminManager extends Component {
             <Card>
               {/* 头部区域 */}
               <div className="g-hd">
-                <div className="search" style={{margin: '30px 10px'}}>
+                <div className="search" style={{ margin: '30px 10px' }}>
                   <Form layout="inline">
                     <Row gutter={16} type="flex" justify="space-between">
                       <Col>
                         <FormItem label="ID">
-                            <Input
-                              value={query.id}
-                              onChange={(e) => {
-                                const { query } = this.state;
-                                const { value } = e.target;
-                                query.id = value;
-                                this.setState({
-                                  query
-                                })
-                              }}
-                              placeholder="请输入用户ID" />
+                          <Input
+                            value={query.id}
+                            onChange={(e) => {
+                              const { query } = this.state;
+                              const { value } = e.target;
+                              query.id = value;
+                              this.setState({
+                                query
+                              })
+                            }}
+                            placeholder="请输入用户ID" />
                         </FormItem>
                         <FormItem label="用户名">
-                            <Input
-                              value={query.nickname}
-                              onChange={(e) => {
-                                const { query } = this.state;
-                                const { value } = e.target;
-                                query.nickname = value;
-                                this.setState({
-                                  query
-                                })
-                              }}
-                              placeholder="请输入用户名" />
+                          <Input
+                            value={query.nickname}
+                            onChange={(e) => {
+                              const { query } = this.state;
+                              const { value } = e.target;
+                              query.nickname = value;
+                              this.setState({
+                                query
+                              })
+                            }}
+                            placeholder="请输入用户名" />
                         </FormItem>
                         <FormItem label="管理员状态">
-                          <Select value={query.status} style={{ width: 90 }} onChange={(val)=>{
-                              const { query } = this.state;
-                              query.status = val;
-                              this.setState({
+                          <Select value={query.status} style={{ width: 90 }} onChange={(val) => {
+                            const { query } = this.state;
+                            query.status = val;
+                            this.setState({
                               query
-                              })
+                            })
                           }} >
                             <Option value={1}>正常</Option>
                             <Option value={0}>冻结</Option>
@@ -190,7 +190,7 @@ class adminManager extends Component {
                         </FormItem>
                       </Col>
                       <Col>
-                        <Button size="large" type="primary" onClick={()=>{
+                        <Button size="large" type="primary" onClick={() => {
                           // 表单重置
                           this.props.form.setFieldsValue({
                             username: '',
@@ -213,32 +213,32 @@ class adminManager extends Component {
                 <Column title="ID" dataIndex="id" />
                 <Column title="用户名" dataIndex="nickname" />
                 <Column title="头像" dataIndex="avatar" render={(text, record) => (
-                  <img src={text} style={{width: '30px', height: '30px'}} />
+                  <img src={text} style={{ width: '30px', height: '30px' }} />
                 )} />
-                <Column title="状态"    dataIndex="active" render={(text, record) => (
-                  <span style={text === 0 ? {color:'#ff4d4f'}: {color:'#52C41A'}}>
+                <Column title="状态" dataIndex="active" render={(text, record) => (
+                  <span style={text === 0 ? { color: '#ff4d4f' } : { color: '#52C41A' }}>
                     {adminStatus[text]}
                   </span>
-                )}/>
+                )} />
 
                 <Column title="创建时间" dataIndex="create_time" render={(text, record) => (
                   <span>
                     {moment(text).format('YYYY-MM-DD HH:mm')}
                   </span>
-                )}/>
+                )} />
                 <Column title="更新时间" dataIndex="update_time" render={(text, record) => (
                   <span>
                     {moment(text).format('YYYY-MM-DD HH:mm')}
                   </span>
-                )}/>
+                )} />
                 <Column
                   title="操作"
                   key="options"
                   render={(text, record) => (
-                    // <Dropdown overlay={menus(record)} placement="bottomLeft">
-                    //   <Button type="primary" icon="setting"></Button>
-                    // </Dropdown>
-                    <Button type="link" style={{padding: 0}}>查看详情</Button>
+                    <Dropdown overlay={menus(record)} placement="bottomLeft">
+                      <Button type="primary" icon="setting"></Button>
+                    </Dropdown>
+                    // <Button type="link" style={{padding: 0}}>查看详情</Button>
 
                   )}
                 />
@@ -247,7 +247,7 @@ class adminManager extends Component {
               {/* 分页 */}
               <Row gutter={16} type="flex" justify="end">
                 <Col>
-                  <Pagination current={page} pageSize={limit} total={total}  onChange={this.changePage.bind(this)} style={{margin: '20px 0'}} />
+                  <Pagination current={page} pageSize={limit} total={total} onChange={this.changePage.bind(this)} style={{ margin: '20px 0' }} />
                 </Col>
               </Row>
 
@@ -257,18 +257,18 @@ class adminManager extends Component {
           {/* 弹窗-添加管理员 */}
           <Modal
             title="添加管理员"
-            onCancel={() =>{
+            onCancel={() => {
               this.setState({
-                addModal:false,
+                addModal: false,
               })
             }}
-            onOk={() =>{
+            onOk={() => {
               // console.log('添加管理员-确认')
               this.addAdmin()
             }}
             visible={addModal}
-            >
-            <Form labelCol={{span:4}} wrapperCol={{span: 18}}>
+          >
+            <Form labelCol={{ span: 4 }} wrapperCol={{ span: 18 }}>
               <FormItem label="角色">
                 {getFieldDecorator('cid', {
                   rules: [
@@ -305,7 +305,7 @@ class adminManager extends Component {
                   <Input
                     onChange={(e) => {
                       const { addForm } = this.state;
-                      const {value} = e.target;
+                      const { value } = e.target;
                       addForm.username = value;
                       this.setState({
                         addForm
@@ -317,24 +317,24 @@ class adminManager extends Component {
               </FormItem>
 
               <FormItem label="密码" hasFeedback>
-              {getFieldDecorator('password', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请输入密码',
-                  },
-                  { min: 6,max: 20, message: '密码长度为6-20位'},
-                ],
-              })(
-                <Password  placeholder="请输入密码" onChange={(e) => {
-                  const { addForm } = this.state;
-                  const {value} = e.target;
-                  addForm.password = value;
-                  this.setState({
-                    addForm
-                  })
-                }}/>
-              )}
+                {getFieldDecorator('password', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请输入密码',
+                    },
+                    { min: 6, max: 20, message: '密码长度为6-20位' },
+                  ],
+                })(
+                  <Password placeholder="请输入密码" onChange={(e) => {
+                    const { addForm } = this.state;
+                    const { value } = e.target;
+                    addForm.password = value;
+                    this.setState({
+                      addForm
+                    })
+                  }} />
+                )}
               </FormItem>
             </Form>
 
@@ -359,20 +359,20 @@ class adminManager extends Component {
             }}
             // 点击遮罩是否允许关闭
             maskClosable={false}
-            >
+          >
             {/* 修改-备注信息 */}
             {
               editModalType === 'password' && (
                 <Password
-                value={editForm.password}
-                placeholder="请输入密码"
-                onChange={ (e) => {
-                  const { editForm } = this.state;
-                  editForm.password = e.target.value;
-                  this.setState({
-                    editForm
-                  })
-                }} />
+                  value={editForm.password}
+                  placeholder="请输入密码"
+                  onChange={(e) => {
+                    const { editForm } = this.state;
+                    editForm.password = e.target.value;
+                    this.setState({
+                      editForm
+                    })
+                  }} />
               )
             }
             {/* 修改-修改状态 */}
@@ -399,10 +399,10 @@ class adminManager extends Component {
 
 
   // 获取管理员列表
-  getAdminList(page){
+  getAdminList (page) {
     // const {gid,create_time,end_time,page,name,model}
     const { dispatch } = this.props;
-    const { limit,sTime,eTime, } = this.state;
+    const { limit, sTime, eTime, } = this.state;
     const {
       // role,
       id,
@@ -418,7 +418,7 @@ class adminManager extends Component {
       nickname,
     }
 
-    if(sTime && eTime) {
+    if (sTime && eTime) {
       payload.startTime = sTime;
       payload.endTime = eTime;
     }
@@ -430,14 +430,14 @@ class adminManager extends Component {
     });
   }
   // 添加管理员
-  addAdmin(){
+  addAdmin () {
     const { dispatch } = this.props
     this.props.form.validateFields((err, values) => {
       if (err) {
         console.log('表单校验错误')
         return
       }
-      const { username, password,group_id } = this.state.addForm;
+      const { username, password, group_id } = this.state.addForm;
 
       const payload = {
         username,
@@ -459,15 +459,15 @@ class adminManager extends Component {
     })
   }
   // 修改管理员信息
-  editAdmin(){
-    const { auid,editModalType } = this.state;
+  editAdmin () {
+    const { id, editModalType } = this.state;
     const { dispatch } = this.props;
 
     switch (editModalType) {
       // 修改-密码
       case 'password':
-        const {password} = this.state.editForm
-        if(password === '') {
+        const { password } = this.state.editForm
+        if (password === '') {
           message.error('密码不能为空')
           return
         }
@@ -475,12 +475,12 @@ class adminManager extends Component {
         dispatch({
           type: 'adminManager/editPassword',
           payload: {
-            auid,
+            id,
             password,
           },
           // 修改成功回调
           callback: (res) => {
-            // this.getAdminList(1);
+            this.getAdminList(1);
             this.setState({
               editModal: false
             })
@@ -526,7 +526,7 @@ class adminManager extends Component {
     }
   }
   // 分页功能(监听)
-  changePage(page) {
+  changePage (page) {
     this.setState({
       page
     })
@@ -561,14 +561,14 @@ class adminManager extends Component {
   }
 
   // 搜索
-  handleQuery(){
+  handleQuery () {
     this.setState({
       page: 1
     })
     this.getAdminList(1)
   }
   // 重置
-  handleQueryReset(){
+  handleQueryReset () {
     // 复位数据
     const queryData = {
       status: '',
@@ -588,18 +588,19 @@ class adminManager extends Component {
   }
 
   // 操作功能
-  changeMenu(record,item){
+  changeMenu (record, item) {
     const { key } = item
-    const { auid,status,username } = record
+    const { id, status, username } = record
     // 管理员id
     this.setState({
-      auid,
+      id,
     })
     const { editForm } = this.state;
     switch (key) {
       // 修改密码
       case '1':
         editForm.password = '';
+
         this.setState({
           editForm,
           editModal: true,
