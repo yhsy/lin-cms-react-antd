@@ -108,12 +108,12 @@ class adminManager extends Component {
               修改密码
             </a>
           </Menu.Item>
-          {/* <Menu.Item key="2">
+          <Menu.Item key="2">
             <a>
               修改状态
             </a>
           </Menu.Item>
-          <Menu.Item key="3">
+          {/* <Menu.Item key="3">
             <a>
               删除管理员
             </a>
@@ -159,7 +159,7 @@ class adminManager extends Component {
                             }}
                             placeholder="请输入用户名" />
                         </FormItem>
-                        <FormItem label="管理员状态">
+                        <FormItem label="状态">
                           <Select value={query.status} style={{ width: 90 }} onChange={(val) => {
                             const { query } = this.state;
                             query.status = val;
@@ -386,7 +386,7 @@ class adminManager extends Component {
                   })
                 }} style={{ width: 120 }}>
                   <Option value={1}>正常</Option>
-                  <Option value={2}>冻结</Option>
+                  <Option value={0}>冻结</Option>
                 </Select>
               )
             }
@@ -492,10 +492,10 @@ class adminManager extends Component {
       case 'status':
         const { status } = this.state.editForm
         dispatch({
-          type: 'adminManager/editStatus',
+          type: 'adminManager/editAdminStatus',
           payload: {
-            auid,
-            status,
+            id,
+            active: status,
           },
           // 修改成功回调
           callback: (res) => {

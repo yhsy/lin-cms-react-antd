@@ -2,17 +2,17 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-09-25 08:57:22
- * @LastEditTime: 2019-09-25 08:57:22
- * @LastEditors: your name
+ * @LastEditTime: 2019-09-29 08:41:22
+ * @LastEditors: Please set LastEditors
  */
+import Md5 from 'md5'
 import {
   getAdminList, addAdmin, editAdmin, delAdmin,
+  editAdminStatus,
   // getColumnsList,
 } from './service';
 
 import { changePassword } from '@/services/admin';
-
-import Md5 from 'md5'
 
 
 const adminModel = {
@@ -66,7 +66,13 @@ const adminModel = {
         callback(response)
       }
     },
-
+    // 修改管理员-状态
+    *editAdminStatus ({ payload, callback }, { call }) {
+      const response = yield call(editAdminStatus, payload);
+      if (response.code === 0) {
+        callback(response)
+      }
+    },
     // 删除管理员
     *delAdmin ({ payload, callback }, { call }) {
       const response = yield call(delAdmin, payload);

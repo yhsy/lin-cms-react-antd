@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-09-25 08:57:32
- * @LastEditTime: 2019-09-25 09:13:44
+ * @LastEditTime: 2019-09-29 08:40:02
  * @LastEditors: Please set LastEditors
  */
 import request from '@/utils/request';
@@ -26,6 +26,14 @@ export async function editAdmin (data) {
     data,
   });
 }
+// 修改-管理员状态
+export async function editAdminStatus (data) {
+  return request('/admin/edit/status', {
+    method: 'POST',
+    data,
+  });
+}
+
 // 删除管理员
 export async function delAdmin (data) {
   return request('/admin/delete', {
