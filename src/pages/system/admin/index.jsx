@@ -113,11 +113,11 @@ class adminManager extends Component {
               修改状态
             </a>
           </Menu.Item>
-          {/* <Menu.Item key="3">
+          <Menu.Item key="3">
             <a>
               删除管理员
             </a>
-          </Menu.Item> */}
+          </Menu.Item>
         </Menu>
       );
     }
@@ -512,7 +512,7 @@ class adminManager extends Component {
         dispatch({
           type: 'adminManager/delAdmin',
           payload: {
-            auid,
+            id,
           },
           // 修改成功回调
           callback: (res) => {
@@ -590,7 +590,7 @@ class adminManager extends Component {
   // 操作功能
   changeMenu (record, item) {
     const { key } = item
-    const { id, status, username } = record
+    const { id, status, nickname } = record
     // 管理员id
     this.setState({
       id,
@@ -625,11 +625,11 @@ class adminManager extends Component {
         })
         Modal.confirm({
           title: `删除管理员?`,
-          content: `确认删除-${username}吗`,
+          content: `确认删除-${nickname}吗`,
           okText: '确认',
           cancelText: '取消',
           onOk: () => {
-            console.log('确认删除')
+            // console.log('确认删除')
             this.editAdmin()
           },
         });
