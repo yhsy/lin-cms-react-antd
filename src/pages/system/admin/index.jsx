@@ -133,44 +133,46 @@ class adminManager extends Component {
                   <Form layout="inline">
                     <Row gutter={16} type="flex" justify="space-between">
                       <Col>
-                        <FormItem label="ID">
-                          <Input
-                            value={query.id}
-                            onChange={(e) => {
+                        <div style={{marginBottom: '20px'}}>
+                          <FormItem label="ID">
+                            <Input
+                              value={query.id}
+                              onChange={(e) => {
+                                const { query } = this.state;
+                                const { value } = e.target;
+                                query.id = value;
+                                this.setState({
+                                  query
+                                })
+                              }}
+                              placeholder="请输入用户ID" />
+                          </FormItem>
+                          <FormItem label="用户名">
+                            <Input
+                              value={query.nickname}
+                              onChange={(e) => {
+                                const { query } = this.state;
+                                const { value } = e.target;
+                                query.nickname = value;
+                                this.setState({
+                                  query
+                                })
+                              }}
+                              placeholder="请输入用户名" />
+                          </FormItem>
+                          <FormItem label="状态">
+                            <Select value={query.status} style={{ width: 90 }} onChange={(val) => {
                               const { query } = this.state;
-                              const { value } = e.target;
-                              query.id = value;
+                              query.status = val;
                               this.setState({
                                 query
                               })
-                            }}
-                            placeholder="请输入用户ID" />
-                        </FormItem>
-                        <FormItem label="用户名">
-                          <Input
-                            value={query.nickname}
-                            onChange={(e) => {
-                              const { query } = this.state;
-                              const { value } = e.target;
-                              query.nickname = value;
-                              this.setState({
-                                query
-                              })
-                            }}
-                            placeholder="请输入用户名" />
-                        </FormItem>
-                        <FormItem label="状态">
-                          <Select value={query.status} style={{ width: 90 }} onChange={(val) => {
-                            const { query } = this.state;
-                            query.status = val;
-                            this.setState({
-                              query
-                            })
-                          }} >
-                            <Option value={1}>正常</Option>
-                            <Option value={0}>冻结</Option>
-                          </Select>
-                        </FormItem>
+                            }} >
+                              <Option value={1}>正常</Option>
+                              <Option value={0}>冻结</Option>
+                            </Select>
+                          </FormItem>
+                        </div>
                         <FormItem label="创建时间">
                           <RangePicker
                             format="YYYY-MM-DD"
