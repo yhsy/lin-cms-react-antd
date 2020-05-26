@@ -56,13 +56,14 @@ const BasicLayout = props => {
 
   useEffect(() => {
     if (dispatch) {
-      dispatch({
-        // type: 'user/fetchCurrent',
-        type: 'admin/getInfo',
-      });
-      dispatch({
-        type: 'settings/getSetting',
-      });
+      // console.log(`基础模板请求的!`)
+      // dispatch({
+      //   // type: 'user/fetchCurrent',
+      //   type: 'admin/getInfo',
+      // });
+      // dispatch({
+      //   type: 'settings/getSetting',
+      // });
     }
   }, []);
   /**
@@ -107,7 +108,7 @@ const BasicLayout = props => {
             <span>{route.breadcrumbName}</span>
           );
       }}
-      footerRender={footerRender}
+      footerRender={null}
       menuDataRender={menuDataRender}
       formatMessage={formatMessage}
       rightContentRender={rightProps => <RightContent {...rightProps} />}
